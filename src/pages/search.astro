@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import { searchRecalls } from '../lib/db';
+import { agencyLabel, formatShortDate, truncate, severityBg, severityLabel } from '../lib/format';
+
+const query = Astro.url.searchParams.get('q') || '';
+const page = parseInt(Astro.url.searchParams.get('page') || '1');
+const env = Astro.locals.runtime.env;
+
+let result = { recalls: [] as any[], total: 0, page: 1, perPage: 50 };
+if (query.trim()) {
+  result = await searchRecalls(env, query.trim(), page, 50);
+}
+const totalPages = Math.ceil(result.total / result.perPage);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Search', url: '/search' },
+];
+---
+
+<Base
+  title={query ? `"${query}" — Recall Search Results | PlainRecalls` : 'Search Product Recalls | PlainRecalls'}
+  description={query ? `Found ${result.total} recalls matching "${query}".` : 'Search product recalls from FDA, CPSC, NHTSA, and USDA.'}
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Search Recalls</h1>
+      <form action="/search" method="get" class="mt-6">
+        <div class="flex gap-2">
+          <input
+            type="search"
+            name="q"
+            value={query}
+            placeholder="Search by product, brand, or keyword..."
+            class="search-input flex-1"
+            aria-label="Search recalls"
+          />
+          <button type="submit" class="rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white hover:bg-primary-700 transition-colors">
+            Search
+          </button>
+        </div>
+      </form>
+
+      {query && (
+        <p class="mt-4 text-sm text-gray-500">
+          {result.total > 0
+            ? `Found ${result.total.toLocaleString()} recalls matching "${query}"`
+            : `No recalls found for "${query}"`
+          }
+        </p>
+      )}
+
+      {result.recalls.length > 0 && (
+        <div class="mt-6 space-y-3">
+          {result.recalls.map(recall => (
+            <a href={`/recall/${recall.slug}`} class="card block hover:shadow-md transition-shadow">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium text-gray-500">{agencyLabel(recall.agency)}</span>
+                <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+                <span class="text-xs text-gray-500">{formatShortDate(recall.date_reported)}</span>
+              </div>
+              <h2 class="mt-1 font-semibold text-gray-900 dark:text-white">{truncate(recall.title, 150)}</h2>
+              {recall.recalling_firm && <p class="mt-0.5 text-sm text-gray-500">{recall.recalling_firm}</p>}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <nav class="pagination mt-8 justify-center">
+          {page > 1 && <a href={`/search?q=${encodeURIComponent(query)}&page=${page-1}`}>&laquo; Prev</a>}
+          {Array.from({length: Math.min(totalPages, 10)}, (_, i) => {
+            const p = i + 1;
+            return p === page
+              ? <span class="active">{p}</span>
+              : <a href={`/search?q=${encodeURIComponent(query)}&page=${p}`}>{p}</a>;
+          })}
+          {page < totalPages && <a href={`/search?q=${encodeURIComponent(query)}&page=${page+1}`}>Next &raquo;</a>}
+        </nav>
+      )}
+    </div>
+  </section>
+</Base>

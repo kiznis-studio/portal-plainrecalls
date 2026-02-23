@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { getRecentRecalls } from '../lib/db';
+import { agencyLabel, formatShortDate, truncate, severityBg, severityLabel } from '../lib/format';
+
+const env = Astro.locals.runtime.env;
+const recalls = await getRecentRecalls(env, 100);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Recent Recalls', url: '/recent' },
+];
+---
+
+<Base
+  title="Recent Product Recalls | PlainRecalls"
+  description="The latest 100 product recalls from FDA, CPSC, NHTSA, and USDA. Stay informed about recalled food, drugs, vehicles, and consumer products."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Recent Recalls</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">The latest product recalls across all agencies.</p>
+
+      <div class="mt-8 space-y-3">
+        {recalls.map(recall => (
+          <a href={`/recall/${recall.slug}`} class="card block hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-gray-500">{agencyLabel(recall.agency)}</span>
+              <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+              <span class="text-xs text-gray-500">{formatShortDate(recall.date_reported)}</span>
+            </div>
+            <h2 class="mt-1 font-semibold text-gray-900 dark:text-white">{truncate(recall.title, 150)}</h2>
+            {recall.recalling_firm && <p class="mt-0.5 text-sm text-gray-500">{recall.recalling_firm}</p>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

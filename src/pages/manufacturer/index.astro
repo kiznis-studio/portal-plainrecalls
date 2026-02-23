@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTopManufacturers } from '../../lib/db';
+import { formatShortDate } from '../../lib/format';
+
+const env = Astro.locals.runtime.env;
+const manufacturers = await getTopManufacturers(env, 200);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Manufacturers', url: '/manufacturer' },
+];
+---
+
+<Base
+  title="Top Manufacturers by Recall Count | PlainRecalls"
+  description="Companies with the most product recalls. Browse manufacturer recall histories from FDA, CPSC, NHTSA, and USDA data."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Manufacturers</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Companies ranked by total product recall count.</p>
+
+      <div class="mt-8 overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Company</th>
+              <th class="text-right">Recalls</th>
+              <th class="text-right">Latest</th>
+            </tr>
+          </thead>
+          <tbody>
+            {manufacturers.map((m, i) => (
+              <tr>
+                <td class="text-gray-400 w-12">{i + 1}</td>
+                <td>
+                  <a href={`/manufacturer/${m.slug}`} class="font-medium text-primary-600 dark:text-primary-400 hover:underline">{m.name}</a>
+                </td>
+                <td class="text-right font-semibold">{m.recall_count.toLocaleString()}</td>
+                <td class="text-right text-sm text-gray-500">{formatShortDate(m.latest_recall_date)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</Base>

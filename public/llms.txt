@@ -1,0 +1,26 @@
+# PlainRecalls — Product Recall Search Engine
+> Search 85,000+ product recalls from FDA, CPSC, NHTSA, and USDA
+
+## What This Site Contains
+- Product recall records from 4 U.S. federal agencies
+- Search by product name, brand, keyword, or recall number
+- Browse by agency (FDA Food, FDA Drug, FDA Device, CPSC, NHTSA)
+- Browse by category (Food, Drugs, Medical Devices, Vehicles, Children, Electronics, etc.)
+- Manufacturer recall histories
+- Year-by-year recall archives
+- Rankings of most recalled companies
+
+## Data Sources
+- FDA openFDA API (food, drug, device enforcement)
+- CPSC SaferProducts.gov API
+- NHTSA vehicle safety recall data
+- USDA FSIS recall data (when available)
+
+## Key Pages
+- /recent — Latest recalls
+- /agency — Browse by agency
+- /category — Browse by category
+- /manufacturer — Browse by company
+- /rankings — Most recalled companies and years
+- /search — Full-text recall search
+- /api/search?q=keyword — JSON search API

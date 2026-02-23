@@ -1,0 +1,89 @@
+---
+const currentPath = Astro.url.pathname;
+function isActive(path: string) {
+  if (path === '/') return currentPath === '/';
+  return currentPath.startsWith(path);
+}
+const navItems = [
+  { href: '/recent', label: 'Recent' },
+  { href: '/agency', label: 'Agencies' },
+  { href: '/category', label: 'Categories' },
+  { href: '/manufacturer', label: 'Manufacturers' },
+  { href: '/search', label: 'Search' },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
+  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+    <a href="/" class="flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-white">
+      <svg class="h-7 w-7" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#dc2626" />
+        <path d="M16 6L19 12H13L16 6Z" fill="white" />
+        <rect x="14" y="13" width="4" height="8" rx="1" fill="white" />
+        <circle cx="16" cy="24" r="2" fill="white" />
+      </svg>
+      PlainRecalls
+    </a>
+    <nav class="hidden items-center gap-1 md:flex">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+            (isActive(item.href) || (item.href === '/agency' && isActive('/agency')))
+              ? 'bg-primary-500/10 text-primary-700 dark:text-primary-400'
+              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <button
+      id="dark-toggle"
+      class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+      aria-label="Toggle dark mode"
+    >
+      <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+      <svg class="hidden h-5 w-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    </button>
+  </div>
+  <!-- Mobile nav -->
+  <nav class="flex gap-1 overflow-x-auto px-4 pb-2 md:hidden">
+    {navItems.map(item => (
+      <a
+        href={item.href}
+        class:list={[
+          'whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium',
+          isActive(item.href)
+            ? 'bg-primary-500/10 text-primary-700 dark:text-primary-400'
+            : 'text-gray-600 dark:text-gray-400',
+        ]}
+      >
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<script>
+  const btn = document.getElementById('dark-toggle');
+  const html = document.documentElement;
+  function applyTheme() {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+  }
+  applyTheme();
+  btn?.addEventListener('click', () => {
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+</script>

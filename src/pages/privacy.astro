@@ -1,0 +1,37 @@
+---
+export const prerender = true;
+import Base from '../layouts/Base.astro';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Privacy Policy', url: '/privacy' },
+];
+---
+
+<Base
+  title="Privacy Policy | PlainRecalls"
+  description="PlainRecalls privacy policy. We respect your privacy and collect minimal data."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-3xl px-4 prose dark:prose-invert">
+      <h1>Privacy Policy</h1>
+      <p><em>Last updated: February 2026</em></p>
+
+      <h2>Information We Collect</h2>
+      <p>PlainRecalls collects minimal, anonymized usage data through privacy-focused analytics (Umami). We do not use cookies for tracking, and we do not collect personally identifiable information.</p>
+
+      <h2>Analytics</h2>
+      <p>We use Umami, a privacy-focused analytics tool that does not use cookies and does not collect personal data. Analytics data is aggregated and cannot be used to identify individual visitors.</p>
+
+      <h2>Third-Party Services</h2>
+      <p>We do not sell, trade, or share your data with third parties. We may display advertisements through Google AdSense, which may use cookies subject to Google's privacy policy.</p>
+
+      <h2>Data Sources</h2>
+      <p>All recall data displayed on this site is sourced from publicly available U.S. government APIs and databases. We do not collect personal data through our recall search features.</p>
+
+      <h2>Contact</h2>
+      <p>For privacy-related inquiries, contact us through <a href="https://kiznis.studio">kiznis.studio</a>.</p>
+    </div>
+  </section>
+</Base>

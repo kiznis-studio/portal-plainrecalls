@@ -1,0 +1,144 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getRecallBySlug, getRelatedRecalls } from '../../lib/db';
+import { agencyLabel, formatDate, severityLabel, severityBg, classLabel, statusLabel, truncate } from '../../lib/format';
+
+const { slug } = Astro.params;
+const env = Astro.locals.runtime.env;
+const recall = await getRecallBySlug(env, slug!);
+if (!recall) return Astro.redirect('/404');
+
+const related = await getRelatedRecalls(env, recall, 5);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: agencyLabel(recall.agency), url: `/agency/${recall.agency.replace(/_/g, '-')}` },
+  { name: truncate(recall.title, 60), url: `/recall/${recall.slug}` },
+];
+
+const severityMap: Record<number, string> = { 1: 'Critical', 2: 'Moderate', 3: 'Low' };
+---
+
+<Base
+  title={`${truncate(recall.title, 100)} | PlainRecalls`}
+  description={truncate(recall.reason || recall.product_description || recall.title, 155)}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="mx-auto max-w-4xl px-4 py-8 md:py-12">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center gap-2 text-sm">
+      <a href={`/agency/${recall.agency.replace(/_/g, '-')}`} class="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+        {agencyLabel(recall.agency)}
+      </a>
+      <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+      {recall.classification && (
+        <span class="badge bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">{classLabel(recall.classification)}</span>
+      )}
+      {recall.status && (
+        <span class="badge bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">{statusLabel(recall.status)}</span>
+      )}
+    </div>
+
+    <h1 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white md:text-3xl leading-tight">
+      {recall.title}
+    </h1>
+
+    <div class="mt-3 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
+      {recall.date_reported && <span>Reported: {formatDate(recall.date_reported)}</span>}
+      {recall.date_initiated && <span>Initiated: {formatDate(recall.date_initiated)}</span>}
+      {recall.recall_number && <span>#{recall.recall_number}</span>}
+    </div>
+
+    <!-- Details -->
+    <div class="mt-8 space-y-6">
+      {recall.product_description && (
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Product Description</h2>
+          <p class="mt-2 text-gray-700 dark:text-gray-300 leading-relaxed">{recall.product_description}</p>
+        </div>
+      )}
+
+      {recall.reason && (
+        <div class="card border-amber-200 dark:border-amber-800/50">
+          <h2 class="text-lg font-semibold text-amber-700 dark:text-amber-400">Reason for Recall</h2>
+          <p class="mt-2 text-gray-700 dark:text-gray-300 leading-relaxed">{recall.reason}</p>
+        </div>
+      )}
+
+      {recall.hazard && recall.hazard !== recall.reason && (
+        <div class="card border-red-200 dark:border-red-800/50">
+          <h2 class="text-lg font-semibold text-amber-700 dark:text-amber-400">Hazard</h2>
+          <p class="mt-2 text-gray-700 dark:text-gray-300 leading-relaxed">{recall.hazard}</p>
+        </div>
+      )}
+
+      {recall.remedy && (
+        <div class="card border-teal-200 dark:border-teal-800/50">
+          <h2 class="text-lg font-semibold text-teal-700 dark:text-teal-400">Remedy</h2>
+          <p class="mt-2 text-gray-700 dark:text-gray-300 leading-relaxed">{recall.remedy}</p>
+        </div>
+      )}
+
+      <!-- Metadata -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Details</h2>
+        <dl class="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+          {recall.recalling_firm && (
+            <div>
+              <dt class="font-medium text-gray-500 dark:text-gray-400">Recalling Firm</dt>
+              <dd class="mt-0.5 text-gray-900 dark:text-white">
+                {recall.manufacturer_id
+                  ? <a href={`/manufacturer/${recall.manufacturer_id}`} class="text-primary-600 dark:text-primary-400 hover:underline">{recall.recalling_firm}</a>
+                  : recall.recalling_firm
+                }
+              </dd>
+            </div>
+          )}
+          {recall.affected_count && (
+            <div>
+              <dt class="font-medium text-gray-500 dark:text-gray-400">Units Affected</dt>
+              <dd class="mt-0.5 text-gray-900 dark:text-white">{recall.affected_count}</dd>
+            </div>
+          )}
+          {recall.distribution && (
+            <div class="sm:col-span-2">
+              <dt class="font-medium text-gray-500 dark:text-gray-400">Distribution</dt>
+              <dd class="mt-0.5 text-gray-900 dark:text-white">{recall.distribution}</dd>
+            </div>
+          )}
+          {(recall.city || recall.state) && (
+            <div>
+              <dt class="font-medium text-gray-500 dark:text-gray-400">Location</dt>
+              <dd class="mt-0.5 text-gray-900 dark:text-white">{[recall.city, recall.state].filter(Boolean).join(', ')}</dd>
+            </div>
+          )}
+          {recall.url && (
+            <div class="sm:col-span-2">
+              <dt class="font-medium text-gray-500 dark:text-gray-400">Official Source</dt>
+              <dd class="mt-0.5"><a href={recall.url} target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:underline break-all">{recall.url}</a></dd>
+            </div>
+          )}
+        </dl>
+      </div>
+    </div>
+
+    <!-- Related Recalls -->
+    {related.length > 0 && (
+      <div class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Related Recalls</h2>
+        <div class="mt-4 space-y-3">
+          {related.map(r => (
+            <a href={`/recall/${r.slug}`} class="block card hover:shadow-md transition-shadow">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{agencyLabel(r.agency)}</span>
+                <span class:list={['badge text-xs', severityBg(r.severity)]}>{severityLabel(r.severity)}</span>
+              </div>
+              <h3 class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{truncate(r.title, 120)}</h3>
+              <p class="mt-0.5 text-xs text-gray-500">{r.recalling_firm} &middot; {r.date_reported}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</Base>

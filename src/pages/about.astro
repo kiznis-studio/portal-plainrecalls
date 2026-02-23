@@ -1,0 +1,52 @@
+---
+export const prerender = true;
+import Base from '../layouts/Base.astro';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'About', url: '/about' },
+];
+---
+
+<Base
+  title="About PlainRecalls — Product Recall Search Engine"
+  description="PlainRecalls aggregates product recalls from FDA, CPSC, NHTSA, and USDA into a single, searchable database. Free and open."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-3xl px-4 prose dark:prose-invert">
+      <h1>About PlainRecalls</h1>
+      <p>
+        PlainRecalls is a free product recall search engine that aggregates recall data
+        from multiple U.S. federal agencies into one easy-to-search database.
+      </p>
+
+      <h2>Data Sources</h2>
+      <ul>
+        <li><strong>FDA (Food and Drug Administration)</strong> — Food, drug, and medical device enforcement actions</li>
+        <li><strong>CPSC (Consumer Product Safety Commission)</strong> — Consumer product recalls</li>
+        <li><strong>NHTSA (National Highway Traffic Safety Administration)</strong> — Vehicle safety recalls</li>
+        <li><strong>USDA FSIS (Food Safety and Inspection Service)</strong> — Meat and poultry recalls</li>
+      </ul>
+
+      <h2>How It Works</h2>
+      <p>
+        We pull recall data directly from official government APIs and databases, normalize it
+        into a consistent format, and make it searchable by product, company, agency, category,
+        and date. Our database is updated regularly to include the latest recalls.
+      </p>
+
+      <h2>Disclaimer</h2>
+      <p>
+        PlainRecalls is not affiliated with any U.S. government agency. While we strive to
+        present accurate recall information, always verify with the official source before
+        making safety decisions. Data is provided "as is" for informational purposes.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        PlainRecalls is part of the <a href="https://kiznis.studio">Kiznis Studio</a> portal network.
+      </p>
+    </div>
+  </section>
+</Base>

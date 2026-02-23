@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTopManufacturers, getRecallCountByYear } from '../../lib/db';
+
+const env = Astro.locals.runtime.env;
+const [topMfrs, yearCounts] = await Promise.all([
+  getTopManufacturers(env, 20),
+  getRecallCountByYear(env),
+]);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Rankings', url: '/rankings' },
+];
+---
+
+<Base
+  title="Recall Rankings — Most Recalled Companies & Years | PlainRecalls"
+  description="Which companies have the most product recalls? Which years saw the most recalls? Rankings from FDA, CPSC, NHTSA, and USDA data."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Recall Rankings</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Companies and years ranked by recall count.</p>
+
+      <div class="mt-10 grid gap-10 lg:grid-cols-2">
+        <!-- Top Manufacturers -->
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Most Recalled Companies</h2>
+          <div class="mt-4 space-y-2">
+            {topMfrs.map((m, i) => (
+              <a href={`/manufacturer/${m.slug}`} class="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-shadow">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-bold text-gray-400 w-6">{i + 1}</span>
+                  <span class="font-medium text-gray-900 dark:text-white">{m.name}</span>
+                </div>
+                <span class="font-bold text-primary-600 dark:text-primary-400">{m.recall_count}</span>
+              </a>
+            ))}
+          </div>
+          <a href="/manufacturer" class="mt-4 inline-block text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline">View all manufacturers &rarr;</a>
+        </div>
+
+        <!-- Recalls by Year -->
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Recalls by Year</h2>
+          <div class="mt-4 space-y-2">
+            {yearCounts.slice(0, 20).map(yc => (
+              <a href={`/year/${yc.year}`} class="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-shadow">
+                <span class="font-medium text-gray-900 dark:text-white">{yc.year}</span>
+                <span class="font-bold text-primary-600 dark:text-primary-400">{yc.count.toLocaleString()}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

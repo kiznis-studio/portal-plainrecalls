@@ -1,0 +1,9 @@
+name = "portal-plainrecalls"
+pages_build_output_dir = "./dist"
+compatibility_date = "2025-03-25"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "plainrecalls-db"
+database_id = "ecd5a646-6aea-4b06-8f3b-f7ab7ba7834d"

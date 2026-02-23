@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
+import Meta from '../components/seo/Meta.astro';
+import Schema from '../components/seo/Schema.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  article?: boolean;
+  breadcrumbs?: { name: string; url: string }[];
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, image, article, breadcrumbs, schema } = Astro.props;
+
+const bcSchema = breadcrumbs ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((bc, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: bc.name,
+    item: new URL(bc.url, Astro.site).href,
+  })),
+} : null;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <Meta title={title} description={description} image={image} article={article} />
+  {bcSchema && <Schema schema={bcSchema} />}
+  {schema && <Schema schema={schema} />}
+  <script is:inline>
+    (function(){var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();
+  </script>
+  <script defer data-website-id="PLACEHOLDER" src="https://analytics.opspixel.com/script.js"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+  <Header />
+  <main class="flex-1">
+    <slot />
+  </main>
+  <Footer />
+</body>
+</html>

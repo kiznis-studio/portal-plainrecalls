@@ -1,0 +1,40 @@
+---
+export const prerender = true;
+import Base from '../layouts/Base.astro';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Terms of Use', url: '/terms' },
+];
+---
+
+<Base
+  title="Terms of Use | PlainRecalls"
+  description="Terms and conditions for using PlainRecalls."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-3xl px-4 prose dark:prose-invert">
+      <h1>Terms of Use</h1>
+      <p><em>Last updated: February 2026</em></p>
+
+      <h2>Acceptance</h2>
+      <p>By accessing PlainRecalls, you agree to these terms. If you do not agree, please do not use the site.</p>
+
+      <h2>Data Accuracy</h2>
+      <p>Recall information is sourced from official U.S. government databases and is provided for informational purposes only. While we strive for accuracy, we cannot guarantee completeness or timeliness. Always verify recall information with the issuing agency before making safety decisions.</p>
+
+      <h2>No Professional Advice</h2>
+      <p>PlainRecalls does not provide medical, legal, or safety advice. Recall information should not be used as a substitute for professional guidance.</p>
+
+      <h2>Limitation of Liability</h2>
+      <p>PlainRecalls and its operators are not liable for any damages arising from the use of this site or reliance on the information provided.</p>
+
+      <h2>Intellectual Property</h2>
+      <p>Government recall data is in the public domain. The site design, code, and original content are the property of Kiznis Studio.</p>
+
+      <h2>Changes</h2>
+      <p>We may update these terms at any time. Continued use constitutes acceptance of updated terms.</p>
+    </div>
+  </section>
+</Base>

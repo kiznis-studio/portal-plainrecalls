@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getRecallsByYear } from '../../lib/db';
+import { agencyLabel, formatShortDate, truncate, severityBg, severityLabel } from '../../lib/format';
+
+const { year: yearStr } = Astro.params;
+const year = parseInt(yearStr!);
+if (isNaN(year) || year < 1990 || year > new Date().getFullYear()) return Astro.redirect('/404');
+
+const env = Astro.locals.runtime.env;
+const page = parseInt(Astro.url.searchParams.get('page') || '1');
+const result = await getRecallsByYear(env, year, page, 50);
+const totalPages = Math.ceil(result.total / result.perPage);
+
+if (result.total === 0) return Astro.redirect('/404');
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: String(year), url: `/year/${year}` },
+];
+---
+
+<Base
+  title={`${year} Product Recalls (${result.total.toLocaleString()}) | PlainRecalls`}
+  description={`Browse ${result.total.toLocaleString()} product recalls from ${year}. FDA, CPSC, NHTSA, and USDA recalls.`}
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{year} Recalls</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">{result.total.toLocaleString()} recalls &middot; Page {page} of {totalPages}</p>
+
+      <div class="flex gap-2 mt-4">
+        {year > 2000 && <a href={`/year/${year - 1}`} class="text-sm text-primary-600 dark:text-primary-400 hover:underline">&larr; {year - 1}</a>}
+        {year < new Date().getFullYear() && <a href={`/year/${year + 1}`} class="text-sm text-primary-600 dark:text-primary-400 hover:underline">{year + 1} &rarr;</a>}
+      </div>
+
+      <div class="mt-8 space-y-3">
+        {result.recalls.map(recall => (
+          <a href={`/recall/${recall.slug}`} class="card block hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-gray-500">{agencyLabel(recall.agency)}</span>
+              <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+              <span class="text-xs text-gray-500">{formatShortDate(recall.date_reported)}</span>
+            </div>
+            <h2 class="mt-1 font-semibold text-gray-900 dark:text-white">{truncate(recall.title, 150)}</h2>
+            {recall.recalling_firm && <p class="mt-0.5 text-sm text-gray-500">{recall.recalling_firm}</p>}
+          </a>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <nav class="pagination mt-8 justify-center">
+          {page > 1 && <a href={`/year/${year}?page=${page-1}`}>&laquo; Prev</a>}
+          {Array.from({length: Math.min(totalPages, 10)}, (_, i) => {
+            const p = i + 1;
+            return p === page
+              ? <span class="active">{p}</span>
+              : <a href={`/year/${year}?page=${p}`}>{p}</a>;
+          })}
+          {totalPages > 10 && <span>...</span>}
+          {page < totalPages && <a href={`/year/${year}?page=${page+1}`}>Next &raquo;</a>}
+        </nav>
+      )}
+    </div>
+  </section>
+</Base>

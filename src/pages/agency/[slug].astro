@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getAgencyBySlug, getRecallsByAgency } from '../../lib/db';
+import { agencyLabel, formatShortDate, truncate, severityBg, severityLabel } from '../../lib/format';
+
+const { slug } = Astro.params;
+const env = Astro.locals.runtime.env;
+const agency = await getAgencyBySlug(env, slug!);
+if (!agency) return Astro.redirect('/404');
+
+const page = parseInt(Astro.url.searchParams.get('page') || '1');
+const result = await getRecallsByAgency(env, agency.agency_id, page, 50);
+const totalPages = Math.ceil(result.total / result.perPage);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Agencies', url: '/agency' },
+  { name: agency.agency_name, url: `/agency/${agency.slug}` },
+];
+---
+
+<Base
+  title={`${agency.agency_name} Recalls (${result.total.toLocaleString()}) | PlainRecalls`}
+  description={agency.description || `Browse ${result.total.toLocaleString()} product recalls from ${agency.agency_name}.`}
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{agency.agency_name}</h1>
+      {agency.description && <p class="mt-2 text-gray-600 dark:text-gray-400">{agency.description}</p>}
+      <p class="mt-1 text-sm text-gray-500">{result.total.toLocaleString()} recalls &middot; Page {page} of {totalPages}</p>
+
+      {agency.url && (
+        <p class="mt-2">
+          <a href={agency.url} target="_blank" rel="noopener" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">Official website &rarr;</a>
+        </p>
+      )}
+
+      <div class="mt-8 space-y-3">
+        {result.recalls.map(recall => (
+          <a href={`/recall/${recall.slug}`} class="card block hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2">
+              <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+              <span class="text-xs text-gray-500">{formatShortDate(recall.date_reported)}</span>
+            </div>
+            <h2 class="mt-1 font-semibold text-gray-900 dark:text-white">{truncate(recall.title, 150)}</h2>
+            {recall.recalling_firm && <p class="mt-0.5 text-sm text-gray-500">{recall.recalling_firm}</p>}
+          </a>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <nav class="pagination mt-8 justify-center">
+          {page > 1 && <a href={`/agency/${slug}?page=${page-1}`}>&laquo; Prev</a>}
+          {Array.from({length: Math.min(totalPages, 10)}, (_, i) => {
+            const p = i + 1;
+            return p === page
+              ? <span class="active">{p}</span>
+              : <a href={`/agency/${slug}?page=${p}`}>{p}</a>;
+          })}
+          {totalPages > 10 && <span>...</span>}
+          {page < totalPages && <a href={`/agency/${slug}?page=${page+1}`}>Next &raquo;</a>}
+        </nav>
+      )}
+    </div>
+  </section>
+</Base>

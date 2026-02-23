@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getAllAgencies } from '../../lib/db';
+
+const env = Astro.locals.runtime.env;
+const agencies = await getAllAgencies(env);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Agencies', url: '/agency' },
+];
+---
+
+<Base
+  title="Recall Agencies — FDA, CPSC, NHTSA & More | PlainRecalls"
+  description="Browse product recalls by federal agency. FDA food, drug, and device recalls. CPSC consumer product recalls. NHTSA vehicle safety recalls."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="section">
+    <div class="mx-auto max-w-4xl px-4">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Recall Agencies</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Federal agencies that issue product safety recalls in the United States.</p>
+      <div class="mt-8 space-y-4">
+        {agencies.map(agency => (
+          <a href={`/agency/${agency.slug}`} class="card block hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-bold text-gray-900 dark:text-white">{agency.agency_name}</h2>
+              <span class="text-lg font-bold text-primary-600 dark:text-primary-400">{agency.recall_count.toLocaleString()}</span>
+            </div>
+            {agency.description && <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{agency.description}</p>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

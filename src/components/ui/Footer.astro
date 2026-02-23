@@ -1,0 +1,57 @@
+---
+const year = new Date().getFullYear();
+const links = [
+  { href: '/about', label: 'About' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
+];
+const network = [
+  { href: 'https://plaincars.com', label: 'PlainCars' },
+  { href: 'https://plainmeds.com', label: 'PlainMeds' },
+  { href: 'https://getfoodfacts.com', label: 'GetFoodFacts' },
+  { href: 'https://plaincost.com', label: 'PlainCost' },
+];
+---
+
+<footer class="border-t border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900/50">
+  <div class="mx-auto max-w-7xl px-4 py-16 md:py-20">
+    <div class="grid grid-cols-2 gap-8 md:grid-cols-12">
+      <div class="col-span-2 md:col-span-4">
+        <a href="/" class="text-lg font-bold text-gray-900 dark:text-white">PlainRecalls</a>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          Search and browse product recalls from FDA, CPSC, NHTSA, and USDA. Free, open data for consumer safety.
+        </p>
+      </div>
+      <div class="md:col-span-2">
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Browse</h3>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="/recent" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Recent Recalls</a></li>
+          <li><a href="/agency" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Agencies</a></li>
+          <li><a href="/category" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Categories</a></li>
+          <li><a href="/manufacturer" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Manufacturers</a></li>
+        </ul>
+      </div>
+      <div class="md:col-span-2">
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Site</h3>
+        <ul class="mt-3 space-y-2 text-sm">
+          {links.map(l => (
+            <li><a href={l.href} class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="col-span-2 md:col-span-4">
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Our Network</h3>
+        <ul class="mt-3 space-y-2 text-sm">
+          {network.map(l => (
+            <li><a href={l.href} target="_blank" rel="noopener" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="mt-12 border-t border-gray-200 pt-8 dark:border-gray-800">
+      <p class="text-center text-xs text-gray-500 dark:text-gray-500">
+        &copy; {year} PlainRecalls. Data sourced from FDA, CPSC, NHTSA, and USDA public APIs. Not affiliated with any government agency.
+      </p>
+    </div>
+  </div>
+</footer>

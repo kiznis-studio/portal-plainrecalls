@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+import { getRecentRecalls, getAllCategories, getAgencyStats, getTotalRecallCount } from '../lib/db';
+import { agencyLabel, formatShortDate, truncate, severityBg, severityLabel } from '../lib/format';
+import type { Recall } from '../lib/types';
+
+const env = Astro.locals.runtime.env;
+const [recent, categories, agencyStats, totalCount] = await Promise.all([
+  getRecentRecalls(env, 12),
+  getAllCategories(env),
+  getAgencyStats(env),
+  getTotalRecallCount(env),
+]);
+
+const CATEGORY_ICONS: Record<string, string> = {
+  'food': '🍎', 'drugs': '💊', 'medical-devices': '🩺', 'vehicles': '🚗',
+  'children': '🧸', 'electronics': '🔋', 'household': '🏠', 'outdoor': '⛺',
+  'cosmetics': '💄', 'supplements': '🧪', 'meat-poultry': '🥩', 'appliances': '🔌',
+};
+---
+
+<Base
+  title="PlainRecalls — Product Recall Search for FDA, CPSC, NHTSA & More"
+  description={`Search ${totalCount.toLocaleString()} product recalls from FDA, CPSC, NHTSA, and USDA. Check if your food, drugs, vehicles, or household products have been recalled.`}
+  schema={{
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'PlainRecalls',
+    url: Astro.site?.href,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: `${Astro.site?.href}search?q={search_term_string}` },
+      'query-input': 'required name=search_term_string',
+    },
+  }}
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-red-50 to-white dark:from-gray-900 dark:to-gray-950">
+    <div class="mx-auto max-w-7xl px-4 py-16 text-center md:py-24">
+      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-5xl">
+        Product Recall Search
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        Search {totalCount.toLocaleString()} recalls from FDA, CPSC, NHTSA, and USDA. Protect yourself and your family.
+      </p>
+      <form action="/search" method="get" class="mx-auto mt-8 max-w-xl">
+        <div class="flex gap-2">
+          <input
+            type="search"
+            name="q"
+            placeholder="Search recalls by product, brand, or keyword..."
+            class="search-input flex-1"
+            aria-label="Search recalls"
+          />
+          <button type="submit" class="rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors">
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Agency Stats -->
+  <section class="section">
+    <div class="mx-auto max-w-7xl px-4">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Recalls by Agency</h2>
+      <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+        {agencyStats.map(stat => (
+          <a href={`/agency/${stat.slug}`} class="card text-center hover:shadow-md transition-shadow">
+            <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">{stat.count.toLocaleString()}</div>
+            <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">{stat.name}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Recalls -->
+  <section class="section bg-gray-50 dark:bg-gray-900/50">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Recent Recalls</h2>
+        <a href="/recent" class="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">View all &rarr;</a>
+      </div>
+      <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {recent.map((recall: Recall) => (
+          <a href={`/recall/${recall.slug}`} class="card hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{agencyLabel(recall.agency)}</span>
+              <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+            </div>
+            <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white leading-snug">{truncate(recall.title, 120)}</h3>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {recall.recalling_firm && <span>{truncate(recall.recalling_firm, 40)} &middot; </span>}
+              {formatShortDate(recall.date_reported)}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section">
+    <div class="mx-auto max-w-7xl px-4">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Browse by Category</h2>
+      <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {categories.filter(c => c.recall_count > 0).map(cat => (
+          <a href={`/category/${cat.slug}`} class="card flex items-center gap-3 hover:shadow-md transition-shadow">
+            <span class="text-2xl">{CATEGORY_ICONS[cat.category_id] || '📦'}</span>
+            <div>
+              <div class="font-semibold text-gray-900 dark:text-white">{cat.category_name}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">{cat.recall_count.toLocaleString()} recalls</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

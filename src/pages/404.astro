@@ -1,0 +1,21 @@
+---
+export const prerender = true;
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Page Not Found | PlainRecalls"
+  description="The page you're looking for doesn't exist."
+>
+  <section class="section">
+    <div class="mx-auto max-w-xl px-4 text-center">
+      <p class="text-6xl font-bold text-gray-300 dark:text-gray-700">404</p>
+      <h1 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Page Not Found</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">The page you're looking for doesn't exist or has been moved.</p>
+      <div class="mt-6 flex justify-center gap-3">
+        <a href="/" class="rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-700">Go Home</a>
+        <a href="/search" class="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Search Recalls</a>
+      </div>
+    </div>
+  </section>
+</Base>
