@@ -17,6 +17,28 @@ const CATEGORY_ICONS: Record<string, string> = {
   'children': '🧸', 'electronics': '🔋', 'household': '🏠', 'outdoor': '⛺',
   'cosmetics': '💄', 'supplements': '🧪', 'meat-poultry': '🥩', 'appliances': '🔌',
 };
+
+const datasetSchema = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "U.S. Product Recall Database",
+  "description": "FDA, CPSC, NHTSA, USDA, and EPA recall data covering 83,000+ product recalls across 12 categories and 12,800+ manufacturers.",
+  "url": "https://plainrecalls.com",
+  "keywords": ["product recalls", "FDA recalls", "CPSC recalls", "NHTSA recalls", "US product safety"],
+  "creator": {
+    "@type": "Organization",
+    "name": "PlainRecalls"
+  },
+  "spatialCoverage": "United States",
+  "temporalCoverage": "2010/2025",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "isAccessibleForFree": true,
+  "distribution": {
+    "@type": "DataDownload",
+    "encodingFormat": "text/html",
+    "contentUrl": "https://plainrecalls.com"
+  }
+};
 ---
 
 <Base
@@ -117,4 +139,6 @@ const CATEGORY_ICONS: Record<string, string> = {
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(datasetSchema)} />
 </Base>
