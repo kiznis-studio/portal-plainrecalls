@@ -1,0 +1,280 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getRadarRecalls, getAgencyStats, getTotalRecallCount } from '../../lib/db';
+import { agencyLabel, formatShortDate, truncate, severityBg, severityLabel, formatNumber } from '../../lib/format';
+
+const env = Astro.locals.runtime.env;
+
+const [{ recalls }, agencyStats, totalRecalls] = await Promise.all([
+  getRadarRecalls(env, { limit: 50 }),
+  getAgencyStats(env),
+  getTotalRecallCount(env),
+]);
+
+const agencies = ['fda_food', 'fda_drug', 'fda_device', 'cpsc', 'nhtsa', 'usda'];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'RecallRadar', url: '/radar/' },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How often is RecallRadar updated?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'RecallRadar shows the latest recalls from our database, which is updated regularly from FDA, CPSC, NHTSA, and USDA public feeds.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What agencies report recalls on PlainRecalls?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We aggregate recalls from FDA (food, drugs, and medical devices), CPSC (consumer products), NHTSA (vehicles), and USDA FSIS (meat and poultry). These six agency feeds cover virtually all U.S. product recalls.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What do the severity levels mean?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Critical (Class I) means a reasonable probability that use of the product will cause serious health consequences or death. Moderate (Class II) means the product may cause temporary or medically reversible health consequences. Low (Class III) means the product is unlikely to cause adverse health consequences.',
+      },
+    },
+  ],
+};
+---
+
+<Base
+  title="RecallRadar — Live Product Recall Feed | PlainRecalls"
+  description="Live feed of product recalls from FDA, CPSC, NHTSA, and USDA. Filter by agency and severity. Subscribe via RSS for instant alerts."
+  breadcrumbs={breadcrumbs}
+  schema={faqSchema}
+>
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <!-- Header -->
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            <span class="inline-block h-3 w-3 rounded-full bg-red-500 animate-pulse mr-2 align-middle"></span>
+            RecallRadar
+          </h1>
+          <p class="mt-2 text-gray-600 dark:text-gray-400">
+            Live feed of product recalls across all U.S. agencies. Filter by agency or severity.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <a
+            href="/radar/feed.xml"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            title="RSS Feed"
+          >
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6.18 15.64a2.18 2.18 0 012.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 012.18-2.18M4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44m0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z" />
+            </svg>
+            RSS Feed
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(totalRecalls)}</div>
+          <div class="text-xs text-gray-500">Total Recalls</div>
+        </div>
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">{agencyStats.length}</div>
+          <div class="text-xs text-gray-500">Agencies</div>
+        </div>
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-amber-600 dark:text-amber-400">
+            {recalls.filter(r => r.severity === 1).length}
+          </div>
+          <div class="text-xs text-gray-500">Critical (Latest 50)</div>
+        </div>
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            {recalls.length > 0 && recalls[0].date_reported ? formatShortDate(recalls[0].date_reported) : 'N/A'}
+          </div>
+          <div class="text-xs text-gray-500">Latest Recall</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-8">
+        <div class="flex flex-wrap gap-2" id="filters">
+          <!-- Agency filters -->
+          <button
+            class="filter-btn inline-flex items-center rounded-full border border-primary-500 bg-primary-500/10 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-400 cursor-pointer transition-colors"
+            data-filter="agency"
+            data-value="all"
+          >
+            All Agencies
+          </button>
+          {agencies.map(a => {
+            const stat = agencyStats.find(s => s.agency === a);
+            return (
+              <button
+                class="filter-btn inline-flex items-center rounded-full border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+                data-filter="agency"
+                data-value={a}
+              >
+                {agencyLabel(a)}
+                {stat && <span class="ml-1 text-xs opacity-60">({formatNumber(stat.count)})</span>}
+              </button>
+            );
+          })}
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2" id="severity-filters">
+          <button class="filter-btn inline-flex items-center rounded-full border border-primary-500 bg-primary-500/10 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-400 cursor-pointer transition-colors" data-filter="severity" data-value="all">All Severity</button>
+          <button class="filter-btn inline-flex items-center rounded-full border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800" data-filter="severity" data-value="1">Critical</button>
+          <button class="filter-btn inline-flex items-center rounded-full border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800" data-filter="severity" data-value="2">Moderate</button>
+          <button class="filter-btn inline-flex items-center rounded-full border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800" data-filter="severity" data-value="3">Low</button>
+        </div>
+      </div>
+
+      <!-- Recall list -->
+      <div class="mt-6 space-y-3" id="recall-list">
+        {recalls.map(recall => (
+          <a
+            href={`/recall/${recall.slug}`}
+            class="card block hover:shadow-md transition-shadow recall-item"
+            data-agency={recall.agency}
+            data-severity={recall.severity}
+          >
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{agencyLabel(recall.agency)}</span>
+              <span class:list={['badge', severityBg(recall.severity)]}>{severityLabel(recall.severity)}</span>
+              <span class="text-xs text-gray-500 dark:text-gray-500">{formatShortDate(recall.date_reported)}</span>
+            </div>
+            <h2 class="mt-1 font-semibold text-gray-900 dark:text-white">{truncate(recall.title, 150)}</h2>
+            {recall.recalling_firm && (
+              <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{recall.recalling_firm}</p>
+            )}
+            {recall.reason && (
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{truncate(recall.reason, 200)}</p>
+            )}
+          </a>
+        ))}
+      </div>
+
+      <div id="no-results" class="hidden mt-8 text-center text-gray-500 dark:text-gray-400">
+        <p class="text-lg font-medium">No recalls match your filters.</p>
+        <p class="mt-1 text-sm">Try adjusting your agency or severity selection.</p>
+      </div>
+
+      <!-- Email alerts placeholder -->
+      <div class="mt-12 card bg-gray-50 dark:bg-gray-900/50">
+        <div class="text-center">
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Stay Informed</h2>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Subscribe to our <a href="/radar/feed.xml" class="text-primary-600 dark:text-primary-400 underline">RSS feed</a>
+            to get recall alerts delivered to your feed reader. You can also filter the feed by agency.
+          </p>
+          <div class="mt-4 flex flex-wrap justify-center gap-2">
+            {agencies.map(a => (
+              <a
+                href={`/radar/feed.xml?agency=${a}`}
+                class="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+              >
+                <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.18 15.64a2.18 2.18 0 012.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 012.18-2.18M4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44m0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z" />
+                </svg>
+                {agencyLabel(a)}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+        <div class="mt-4 space-y-4">
+          <div class="card">
+            <h3 class="font-semibold text-gray-900 dark:text-white">How often is RecallRadar updated?</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              RecallRadar shows the latest recalls from our database, which is updated regularly from FDA, CPSC, NHTSA, and USDA public feeds.
+            </p>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold text-gray-900 dark:text-white">What agencies report recalls on PlainRecalls?</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              We aggregate recalls from FDA (food, drugs, and medical devices), CPSC (consumer products), NHTSA (vehicles), and USDA FSIS (meat and poultry). These six agency feeds cover virtually all U.S. product recalls.
+            </p>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold text-gray-900 dark:text-white">What do the severity levels mean?</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <strong>Critical (Class I)</strong> means a reasonable probability of serious health consequences or death.
+              <strong>Moderate (Class II)</strong> means temporary or medically reversible health consequences.
+              <strong>Low (Class III)</strong> means unlikely to cause adverse health consequences.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+
+<script>
+  const items = document.querySelectorAll<HTMLElement>('.recall-item');
+  const noResults = document.getElementById('no-results');
+  let activeAgency = 'all';
+  let activeSeverity = 'all';
+
+  const activeClasses = ['border-primary-500', 'bg-primary-500/10', 'text-primary-700', 'dark:text-primary-400'];
+  const inactiveClasses = ['border-gray-300', 'text-gray-600', 'dark:border-gray-700', 'dark:text-gray-400'];
+
+  function setActive(btn: HTMLButtonElement, isActive: boolean) {
+    if (isActive) {
+      inactiveClasses.forEach(c => btn.classList.remove(c));
+      activeClasses.forEach(c => btn.classList.add(c));
+    } else {
+      activeClasses.forEach(c => btn.classList.remove(c));
+      inactiveClasses.forEach(c => btn.classList.add(c));
+    }
+  }
+
+  function applyFilters() {
+    let visible = 0;
+    items.forEach(item => {
+      const matchAgency = activeAgency === 'all' || item.dataset.agency === activeAgency;
+      const matchSeverity = activeSeverity === 'all' || item.dataset.severity === activeSeverity;
+      const show = matchAgency && matchSeverity;
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (noResults) {
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-filter="agency"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeAgency = btn.dataset.value || 'all';
+      document.querySelectorAll<HTMLButtonElement>('[data-filter="agency"]').forEach(b => {
+        setActive(b, b.dataset.value === activeAgency);
+      });
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-filter="severity"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeSeverity = btn.dataset.value || 'all';
+      document.querySelectorAll<HTMLButtonElement>('[data-filter="severity"]').forEach(b => {
+        setActive(b, b.dataset.value === activeSeverity);
+      });
+      applyFilters();
+    });
+  });
+</script>

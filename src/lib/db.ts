@@ -160,6 +160,36 @@ export async function getRecallCountByYear(env: Env): Promise<{ year: string; co
   return results;
 }
 
+// ---- Radar (filtered recent) ----
+
+export async function getRadarRecalls(
+  env: Env,
+  options: { agency?: string; severity?: number; limit?: number } = {},
+): Promise<{ recalls: Recall[]; total: number }> {
+  const { agency, severity, limit = 50 } = options;
+  const conditions: string[] = [];
+  const binds: (string | number)[] = [];
+
+  if (agency) {
+    conditions.push('agency = ?');
+    binds.push(agency);
+  }
+  if (severity) {
+    conditions.push('severity = ?');
+    binds.push(severity);
+  }
+
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  const [countRow, { results }] = await Promise.all([
+    env.DB.prepare(`SELECT COUNT(*) as total FROM recalls ${where}`).bind(...binds).first<{ total: number }>(),
+    env.DB.prepare(`SELECT * FROM recalls ${where} ORDER BY date_reported DESC LIMIT ?`)
+      .bind(...binds, limit).all<Recall>(),
+  ]);
+
+  return { recalls: results, total: countRow?.total || 0 };
+}
+
 // ---- Sitemap helpers ----
 
 export async function getAllRecallSlugs(env: Env): Promise<string[]> {

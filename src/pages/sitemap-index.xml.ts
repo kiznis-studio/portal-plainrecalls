@@ -4,6 +4,7 @@ export const GET: APIRoute = async ({ site }) => {
   const base = site?.href || 'https://plainrecalls.com/';
   const sitemaps = [
     'sitemap-static.xml',
+    'sitemap-radar.xml',
     'sitemap-agencies.xml',
     'sitemap-categories.xml',
     'sitemap-manufacturers.xml',
