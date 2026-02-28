@@ -1,25 +1,55 @@
-name: Deploy to Cloudflare Pages
+name: Build & Deploy to Titan
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: kiznis-studio/portal-plainrecalls
+
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
-      deployments: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          node-version: 22
-      - run: npm ci
-      - run: npm run build
-      - run: cp public/_redirects dist/ 2>/dev/null || true
-      - uses: cloudflare/wrangler-action@v3
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=portal-plainrecalls
+          context: .
+          push: true
+          tags: |
+            ghcr.io/kiznis-studio/portal-plainrecalls:latest
+            ghcr.io/kiznis-studio/portal-plainrecalls:${{ github.sha }}
+
+      - name: Deploy to Titan
+        env:
+          SSH_KEY: ${{ secrets.TITAN_SSH_KEY }}
+          TITAN_HOST: ${{ secrets.TITAN_HOST }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/titan_key
+          chmod 600 ~/.ssh/titan_key
+          ssh-keyscan -H "$TITAN_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          echo "$GHCR_TOKEN" | ssh -i ~/.ssh/titan_key "root@${TITAN_HOST}" \
+            'docker login ghcr.io -u github-actions --password-stdin && \
+             cd /opt/portals && \
+             docker pull ghcr.io/kiznis-studio/portal-plainrecalls:latest && \
+             docker compose up -d portal-plainrecalls && \
+             docker logout ghcr.io && \
+             echo "PlainRecalls deployed at $(date)"'
