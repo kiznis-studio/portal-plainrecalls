@@ -6,9 +6,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const query = url.searchParams.get('q') || '';
   const page = parseInt(url.searchParams.get('page') || '1');
 
-  if (!query.trim()) {
+  if (!query.trim() || query.trim().length < 2) {
     return new Response(JSON.stringify({ recalls: [], total: 0 }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=300, s-maxage=3600' },
     });
   }
 
