@@ -1,20 +1,20 @@
 import type { APIRoute } from 'astro';
-import { getAllManufacturerSlugs } from '../lib/db';
+import { getRecallCountByYear } from '../lib/db';
 
 const BASE = 'https://plainrecalls.com';
 
 export const GET: APIRoute = async ({ locals }) => {
   const env = (locals as any).runtime.env;
-  const slugs = await getAllManufacturerSlugs(env);
+  const yearData = await getRecallCountByYear(env);
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...slugs.map(s => `  <url><loc>${BASE}/manufacturer/${s}</loc><changefreq>monthly</changefreq></url>`),
+    ...yearData.map(y => `  <url><loc>${BASE}/year/${y.year}</loc><changefreq>monthly</changefreq></url>`),
     '</urlset>',
   ].join('\n');
 
   return new Response(xml, {
-    headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'public, max-age=3600' },
+    headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'public, max-age=86400' },
   });
 };
