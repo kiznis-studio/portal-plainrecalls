@@ -53,6 +53,7 @@ DROP TABLE IF EXISTS recalls;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS manufacturers;
 DROP TABLE IF EXISTS agencies;
+DROP TABLE IF EXISTS _stats;
 
 CREATE TABLE recalls (
   recall_id TEXT PRIMARY KEY,
@@ -114,6 +115,11 @@ CREATE INDEX idx_recalls_status ON recalls(status);
 CREATE INDEX idx_recalls_slug ON recalls(slug);
 CREATE INDEX idx_manufacturers_slug ON manufacturers(slug);
 CREATE INDEX idx_categories_slug ON categories(slug);
+CREATE INDEX idx_recalls_title ON recalls(title);
+CREATE INDEX idx_recalls_firm ON recalls(recalling_firm);
+CREATE INDEX idx_recalls_number ON recalls(recall_number);
+
+CREATE TABLE _stats (key TEXT PRIMARY KEY, value TEXT);
 `;
   writeFileSync(resolve(SEED_DIR, '000-schema.sql'), schema.trim() + '\n');
 
@@ -138,6 +144,14 @@ CREATE INDEX idx_categories_slug ON categories(slug);
   ];
   const recallFiles = exportTable(db, 'recalls', recallCols, '010-recalls', 50, 10);
   console.log('    → ' + recallFiles + ' files');
+
+  // Pre-computed stats
+  const statsRows = db.prepare('SELECT * FROM _stats ORDER BY key').all();
+  if (statsRows.length > 0) {
+    const lines = statsRows.map(r => `INSERT INTO _stats (key, value) VALUES (${esc(r.key)}, ${esc(r.value)});`);
+    writeFileSync(resolve(SEED_DIR, '005-stats.sql'), lines.join('\n') + '\n');
+    console.log('  _stats: ' + statsRows.length + ' rows');
+  }
 
   db.close();
 

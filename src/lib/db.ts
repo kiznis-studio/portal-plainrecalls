@@ -59,14 +59,15 @@ export async function getRecallsByYear(env: Env, year: number, page = 1, perPage
 
 export async function searchRecalls(env: Env, query: string, page = 1, perPage = 50): Promise<SearchResult> {
   const offset = (page - 1) * perPage;
-  const pattern = `%${query}%`;
+  // Use prefix matching to avoid full table scans (LIKE 'query%' can use indexes)
+  const prefix = `${query}%`;
   const [countRow, { results }] = await Promise.all([
     env.DB.prepare(
-      'SELECT COUNT(*) as total FROM recalls WHERE title LIKE ? OR product_description LIKE ? OR recalling_firm LIKE ? OR recall_number LIKE ?'
-    ).bind(pattern, pattern, pattern, pattern).first<{ total: number }>(),
+      'SELECT COUNT(*) as total FROM recalls WHERE title LIKE ? OR recalling_firm LIKE ? OR recall_number LIKE ?'
+    ).bind(prefix, prefix, prefix).first<{ total: number }>(),
     env.DB.prepare(
-      'SELECT * FROM recalls WHERE title LIKE ? OR product_description LIKE ? OR recalling_firm LIKE ? OR recall_number LIKE ? ORDER BY date_reported DESC LIMIT ? OFFSET ?'
-    ).bind(pattern, pattern, pattern, pattern, perPage, offset).all<Recall>(),
+      'SELECT * FROM recalls WHERE title LIKE ? OR recalling_firm LIKE ? OR recall_number LIKE ? ORDER BY date_reported DESC LIMIT ? OFFSET ?'
+    ).bind(prefix, prefix, prefix, perPage, offset).all<Recall>(),
   ]);
   return { recalls: results, total: countRow?.total || 0, page, perPage };
 }
@@ -105,10 +106,10 @@ export async function getManufacturerBySlug(env: Env, slug: string): Promise<Man
 }
 
 export async function searchManufacturers(env: Env, query: string, limit = 20): Promise<Manufacturer[]> {
-  const pattern = `%${query}%`;
+  const prefix = `${query}%`;
   const { results } = await env.DB.prepare(
     'SELECT * FROM manufacturers WHERE name LIKE ? ORDER BY recall_count DESC LIMIT ?'
-  ).bind(pattern, limit).all<Manufacturer>();
+  ).bind(prefix, limit).all<Manufacturer>();
   return results;
 }
 
@@ -139,11 +140,25 @@ export async function getAgencyStats(env: Env): Promise<AgencyStats[]> {
 }
 
 export async function getTotalRecallCount(env: Env): Promise<number> {
-  const row = await env.DB.prepare('SELECT COUNT(*) as total FROM recalls').first<{ total: number }>();
-  return row?.total || 0;
+  try {
+    const row = await env.DB.prepare("SELECT value FROM _stats WHERE key = 'total_recalls'").first<{ value: string }>();
+    if (row) return parseInt(row.value);
+  } catch { /* _stats may not exist yet */ }
+  // Fallback: approximate from MAX(rowid)
+  const row = await env.DB.prepare('SELECT MAX(rowid) as m FROM recalls').first<{ m: number }>();
+  return row?.m || 0;
 }
 
 export async function getYearRange(env: Env): Promise<{ minYear: number; maxYear: number }> {
+  try {
+    const { results } = await env.DB.prepare(
+      "SELECT key, value FROM _stats WHERE key IN ('year_min', 'year_max')"
+    ).all<{ key: string; value: string }>();
+    if (results.length === 2) {
+      const map = Object.fromEntries(results.map(r => [r.key, r.value]));
+      return { minYear: parseInt(map.year_min || '2000'), maxYear: parseInt(map.year_max || '2026') };
+    }
+  } catch { /* _stats may not exist yet */ }
   const row = await env.DB.prepare(
     "SELECT MIN(SUBSTR(date_reported,1,4)) as minYear, MAX(SUBSTR(date_reported,1,4)) as maxYear FROM recalls WHERE date_reported IS NOT NULL"
   ).first<{ minYear: string; maxYear: string }>();
@@ -154,6 +169,10 @@ export async function getYearRange(env: Env): Promise<{ minYear: number; maxYear
 }
 
 export async function getRecallCountByYear(env: Env): Promise<{ year: string; count: number }[]> {
+  try {
+    const row = await env.DB.prepare("SELECT value FROM _stats WHERE key = 'recalls_by_year'").first<{ value: string }>();
+    if (row) return JSON.parse(row.value);
+  } catch { /* _stats may not exist yet */ }
   const { results } = await env.DB.prepare(
     "SELECT SUBSTR(date_reported,1,4) as year, COUNT(*) as count FROM recalls WHERE date_reported IS NOT NULL GROUP BY year ORDER BY year DESC"
   ).all<{ year: string; count: number }>();

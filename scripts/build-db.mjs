@@ -439,6 +439,30 @@ function main() {
     console.log('  Recalls: ' + inserted + '/' + recalls.length);
   }
 
+  // Pre-compute stats table (avoids COUNT(*) and MIN/MAX on every page load)
+  console.log('\nPopulating _stats table...');
+  db.prepare('CREATE TABLE IF NOT EXISTS _stats (key TEXT PRIMARY KEY, value TEXT)').run();
+  const insertStat = db.prepare('INSERT OR REPLACE INTO _stats (key, value) VALUES (?, ?)');
+
+  const totalRecalls = db.prepare('SELECT COUNT(*) as c FROM recalls').get().c;
+  insertStat.run('total_recalls', String(totalRecalls));
+  console.log('  total_recalls = ' + totalRecalls);
+
+  const yearMin = db.prepare("SELECT MIN(SUBSTR(date_reported,1,4)) as v FROM recalls WHERE date_reported IS NOT NULL").get().v;
+  const yearMax = db.prepare("SELECT MAX(SUBSTR(date_reported,1,4)) as v FROM recalls WHERE date_reported IS NOT NULL").get().v;
+  insertStat.run('year_min', yearMin);
+  insertStat.run('year_max', yearMax);
+  console.log('  year_min = ' + yearMin + ', year_max = ' + yearMax);
+
+  const byYear = db.prepare("SELECT SUBSTR(date_reported,1,4) as year, COUNT(*) as count FROM recalls WHERE date_reported IS NOT NULL GROUP BY year ORDER BY year DESC").all();
+  insertStat.run('recalls_by_year', JSON.stringify(byYear));
+  console.log('  recalls_by_year = ' + byYear.length + ' years');
+
+  // Create indexes for prefix search
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_recalls_title ON recalls(title)').run();
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_recalls_firm ON recalls(recalling_firm)').run();
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_recalls_number ON recalls(recall_number)').run();
+
   db.close();
 
   // Summary
