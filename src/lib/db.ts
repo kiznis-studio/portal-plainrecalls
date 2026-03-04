@@ -2,13 +2,22 @@ import type { Recall, Category, Manufacturer, Agency, SearchResult, AgencyStats 
 
 type Env = { DB: D1Database };
 
+const queryCache = new Map<string, any>();
+export function getQueryCacheSize(): number { return queryCache.size; }
+function cached<T>(key: string, compute: () => Promise<T>): Promise<T> {
+  if (queryCache.has(key)) return Promise.resolve(queryCache.get(key) as T);
+  return compute().then(result => { queryCache.set(key, result); return result; });
+}
+
 // ---- Recalls ----
 
 export async function getRecentRecalls(env: Env, limit = 20): Promise<Recall[]> {
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM recalls ORDER BY date_reported DESC LIMIT ?'
-  ).bind(limit).all<Recall>();
-  return results;
+  return cached(`recent_recalls:${limit}`, async () => {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM recalls ORDER BY date_reported DESC LIMIT ?'
+    ).bind(limit).all<Recall>();
+    return results;
+  });
 }
 
 export async function getRecallBySlug(env: Env, slug: string): Promise<Recall | null> {
@@ -82,10 +91,12 @@ export async function getRelatedRecalls(env: Env, recall: Recall, limit = 5): Pr
 // ---- Categories ----
 
 export async function getAllCategories(env: Env): Promise<Category[]> {
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM categories ORDER BY recall_count DESC'
-  ).all<Category>();
-  return results;
+  return cached('all_categories', async () => {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM categories ORDER BY recall_count DESC'
+    ).all<Category>();
+    return results;
+  });
 }
 
 export async function getCategoryBySlug(env: Env, slug: string): Promise<Category | null> {
@@ -95,10 +106,12 @@ export async function getCategoryBySlug(env: Env, slug: string): Promise<Categor
 // ---- Manufacturers ----
 
 export async function getTopManufacturers(env: Env, limit = 100): Promise<Manufacturer[]> {
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM manufacturers ORDER BY recall_count DESC LIMIT ?'
-  ).bind(limit).all<Manufacturer>();
-  return results;
+  return cached(`top_manufacturers:${limit}`, async () => {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM manufacturers ORDER BY recall_count DESC LIMIT ?'
+    ).bind(limit).all<Manufacturer>();
+    return results;
+  });
 }
 
 export async function getManufacturerBySlug(env: Env, slug: string): Promise<Manufacturer | null> {
@@ -116,10 +129,12 @@ export async function searchManufacturers(env: Env, query: string, limit = 20): 
 // ---- Agencies ----
 
 export async function getAllAgencies(env: Env): Promise<Agency[]> {
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM agencies WHERE recall_count > 0 ORDER BY recall_count DESC'
-  ).all<Agency>();
-  return results;
+  return cached('all_agencies', async () => {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM agencies WHERE recall_count > 0 ORDER BY recall_count DESC'
+    ).all<Agency>();
+    return results;
+  });
 }
 
 export async function getAgencyBySlug(env: Env, slug: string): Promise<Agency | null> {
@@ -133,50 +148,58 @@ export async function getAgencyByAgencyId(env: Env, agencyId: string): Promise<A
 // ---- Stats ----
 
 export async function getAgencyStats(env: Env): Promise<AgencyStats[]> {
-  const { results } = await env.DB.prepare(
-    'SELECT a.agency_id as agency, a.recall_count as count, a.agency_name as name, a.slug FROM agencies a WHERE a.recall_count > 0 ORDER BY a.recall_count DESC'
-  ).all<AgencyStats>();
-  return results;
+  return cached('agency_stats', async () => {
+    const { results } = await env.DB.prepare(
+      'SELECT a.agency_id as agency, a.recall_count as count, a.agency_name as name, a.slug FROM agencies a WHERE a.recall_count > 0 ORDER BY a.recall_count DESC'
+    ).all<AgencyStats>();
+    return results;
+  });
 }
 
 export async function getTotalRecallCount(env: Env): Promise<number> {
-  try {
-    const row = await env.DB.prepare("SELECT value FROM _stats WHERE key = 'total_recalls'").first<{ value: string }>();
-    if (row) return parseInt(row.value);
-  } catch { /* _stats may not exist yet */ }
-  // Fallback: approximate from MAX(rowid)
-  const row = await env.DB.prepare('SELECT MAX(rowid) as m FROM recalls').first<{ m: number }>();
-  return row?.m || 0;
+  return cached('total_recall_count', async () => {
+    try {
+      const row = await env.DB.prepare("SELECT value FROM _stats WHERE key = 'total_recalls'").first<{ value: string }>();
+      if (row) return parseInt(row.value);
+    } catch { /* _stats may not exist yet */ }
+    // Fallback: approximate from MAX(rowid)
+    const row = await env.DB.prepare('SELECT MAX(rowid) as m FROM recalls').first<{ m: number }>();
+    return row?.m || 0;
+  });
 }
 
 export async function getYearRange(env: Env): Promise<{ minYear: number; maxYear: number }> {
-  try {
-    const { results } = await env.DB.prepare(
-      "SELECT key, value FROM _stats WHERE key IN ('year_min', 'year_max')"
-    ).all<{ key: string; value: string }>();
-    if (results.length === 2) {
-      const map = Object.fromEntries(results.map(r => [r.key, r.value]));
-      return { minYear: parseInt(map.year_min || '2000'), maxYear: parseInt(map.year_max || '2026') };
-    }
-  } catch { /* _stats may not exist yet */ }
-  const row = await env.DB.prepare(
-    "SELECT MIN(SUBSTR(date_reported,1,4)) as minYear, MAX(SUBSTR(date_reported,1,4)) as maxYear FROM recalls WHERE date_reported IS NOT NULL"
-  ).first<{ minYear: string; maxYear: string }>();
-  return {
-    minYear: parseInt(row?.minYear || '2000'),
-    maxYear: parseInt(row?.maxYear || '2026'),
-  };
+  return cached('year_range', async () => {
+    try {
+      const { results } = await env.DB.prepare(
+        "SELECT key, value FROM _stats WHERE key IN ('year_min', 'year_max')"
+      ).all<{ key: string; value: string }>();
+      if (results.length === 2) {
+        const map = Object.fromEntries(results.map(r => [r.key, r.value]));
+        return { minYear: parseInt(map.year_min || '2000'), maxYear: parseInt(map.year_max || '2026') };
+      }
+    } catch { /* _stats may not exist yet */ }
+    const row = await env.DB.prepare(
+      "SELECT MIN(SUBSTR(date_reported,1,4)) as minYear, MAX(SUBSTR(date_reported,1,4)) as maxYear FROM recalls WHERE date_reported IS NOT NULL"
+    ).first<{ minYear: string; maxYear: string }>();
+    return {
+      minYear: parseInt(row?.minYear || '2000'),
+      maxYear: parseInt(row?.maxYear || '2026'),
+    };
+  });
 }
 
 export async function getRecallCountByYear(env: Env): Promise<{ year: string; count: number }[]> {
-  try {
-    const row = await env.DB.prepare("SELECT value FROM _stats WHERE key = 'recalls_by_year'").first<{ value: string }>();
-    if (row) return JSON.parse(row.value);
-  } catch { /* _stats may not exist yet */ }
-  const { results } = await env.DB.prepare(
-    "SELECT SUBSTR(date_reported,1,4) as year, COUNT(*) as count FROM recalls WHERE date_reported IS NOT NULL GROUP BY year ORDER BY year DESC"
-  ).all<{ year: string; count: number }>();
-  return results;
+  return cached('recall_count_by_year', async () => {
+    try {
+      const row = await env.DB.prepare("SELECT value FROM _stats WHERE key = 'recalls_by_year'").first<{ value: string }>();
+      if (row) return JSON.parse(row.value);
+    } catch { /* _stats may not exist yet */ }
+    const { results } = await env.DB.prepare(
+      "SELECT SUBSTR(date_reported,1,4) as year, COUNT(*) as count FROM recalls WHERE date_reported IS NOT NULL GROUP BY year ORDER BY year DESC"
+    ).all<{ year: string; count: number }>();
+    return results;
+  });
 }
 
 // ---- Radar (filtered recent) ----
