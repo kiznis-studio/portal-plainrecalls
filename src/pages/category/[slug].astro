@@ -20,8 +20,8 @@ const breadcrumbs = [
 ---
 
 <Base
-  title={`${category.category_name} Recalls (${result.total.toLocaleString()}) | PlainRecalls`}
-  description={category.description || `Browse ${result.total.toLocaleString()} ${category.category_name.toLowerCase()} product recalls.`}
+  title={`${category.category_name} Recalls — ${result.total.toLocaleString()} Products (FDA/CPSC/NHTSA)`}
+  description={`${result.total.toLocaleString()} ${category.category_name.toLowerCase()} recalls from FDA, CPSC, and NHTSA. ${category.description || 'Search by product, manufacturer, or date.'}`}
   breadcrumbs={breadcrumbs}
 >
   <section class="section">
