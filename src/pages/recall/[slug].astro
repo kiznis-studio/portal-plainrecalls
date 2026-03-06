@@ -52,6 +52,40 @@ const faqSchema = JSON.stringify({
     acceptedAnswer: { '@type': 'Answer', text: f.a },
   })),
 });
+
+const breadcrumbSchema = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((b, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: b.name,
+    item: `https://plainrecalls.com${b.url}`,
+  })),
+});
+
+const recallSchema = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: recall.product_description || recall.title,
+  description: recall.reason || recall.product_description || recall.title,
+  ...(recall.recalling_firm && { brand: { '@type': 'Brand', name: recall.recalling_firm } }),
+  ...(recall.recalling_firm && { manufacturer: { '@type': 'Organization', name: recall.recalling_firm } }),
+  review: {
+    '@type': 'Review',
+    name: `Recall: ${truncate(recall.title, 80)}`,
+    reviewBody: recall.reason || recall.title,
+    author: { '@type': 'Organization', name: agencyLabel(recall.agency) },
+    ...(recall.date_reported && { datePublished: recall.date_reported }),
+    reviewRating: {
+      '@type': 'Rating',
+      worstRating: 1,
+      bestRating: 3,
+      ratingValue: recall.severity === 1 ? 1 : recall.severity === 2 ? 2 : 3,
+      ratingExplanation: `${severityMap[recall.severity] || 'Unknown'} severity recall`,
+    },
+  },
+});
 ---
 
 <Base
@@ -203,5 +237,7 @@ const faqSchema = JSON.stringify({
       </div>
     </div>
   </div>
+  <script type="application/ld+json" set:html={breadcrumbSchema} />
   <script type="application/ld+json" set:html={faqSchema} />
+  <script type="application/ld+json" set:html={recallSchema} />
 </Base>
