@@ -46,8 +46,27 @@ const bcSchema = breadcrumbs ? {
     (function(){var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();
   </script>
   <script defer data-website-id="beefc0a7-1bfe-4363-ad35-fa24ad4cb9ed" src="https://analytics.opspixel.com/script.js"></script>
+  <!-- Consent Mode v2 defaults — MUST come before any Google tags -->
+  <script is:inline>
+    window.dataLayer=window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments)}
+    gtag('consent','default',{
+      'ad_storage':'denied',
+      'ad_user_data':'denied',
+      'ad_personalization':'denied',
+      'analytics_storage':'granted',
+      'wait_for_update':500
+    });
+    gtag('consent','default',{
+      'ad_storage':'granted',
+      'ad_user_data':'granted',
+      'ad_personalization':'granted',
+      'analytics_storage':'granted',
+      'region':['US']
+    });
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XC128653DY"></script>
-  <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XC128653DY');</script>
+  <script is:inline>gtag('js',new Date());gtag('config','G-XC128653DY');</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7887321168925353" crossorigin="anonymous"></script>
 </head>
 <body class="min-h-screen flex flex-col">
