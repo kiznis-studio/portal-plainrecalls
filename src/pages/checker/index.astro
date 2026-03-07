@@ -1,0 +1,211 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/ads/AdSlot.astro';
+import { getTotalRecallCount } from '../../lib/db';
+import { formatNumber } from '../../lib/format';
+
+const env = Astro.locals.runtime.env;
+const totalCount = await getTotalRecallCount(env);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Recall Checker', url: '/checker/' },
+];
+
+const QUICK_CATEGORIES = [
+  { slug: 'children', label: 'Baby Products', icon: '\uD83E\uDDF8' },
+  { slug: 'food', label: 'Food', icon: '\uD83C\uDF4E' },
+  { slug: 'vehicles', label: 'Vehicles', icon: '\uD83D\uDE97' },
+  { slug: 'drugs', label: 'Drugs', icon: '\uD83D\uDC8A' },
+  { slug: 'medical-devices', label: 'Medical Devices', icon: '\uD83E\uDE7A' },
+  { slug: 'electronics', label: 'Electronics', icon: '\uD83D\uDD0B' },
+];
+
+const STEPS = [
+  {
+    num: '1',
+    title: 'Enter Your Product',
+    desc: 'Type a product name, brand, or keyword into the search box above.',
+  },
+  {
+    num: '2',
+    title: 'Review Results',
+    desc: 'Browse matching recalls from FDA, CPSC, NHTSA, and USDA databases.',
+  },
+  {
+    num: '3',
+    title: 'Read the Details',
+    desc: 'Check severity, affected models, and what action to take if your product is recalled.',
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: 'How do I check if a product is recalled?',
+    a: 'Enter the product name, brand, or model number in the search box above. Our database searches across FDA, CPSC, NHTSA, and USDA recall records to find matches. You can also browse by category to see all recalls in a specific product type.',
+  },
+  {
+    q: 'What agencies report product recalls?',
+    a: 'PlainRecalls aggregates data from five major U.S. agencies: FDA (food, drugs, and medical devices), CPSC (consumer products like toys, electronics, and furniture), NHTSA (vehicles and car seats), and USDA FSIS (meat, poultry, and egg products).',
+  },
+  {
+    q: 'How often are recalls updated?',
+    a: 'Our database is updated regularly from official government feeds. New recalls are typically added within 24 hours of being published by the issuing agency.',
+  },
+  {
+    q: 'What should I do if my product is recalled?',
+    a: 'Stop using the product immediately. Check the recall notice for specific instructions \u2014 most recalls offer a refund, replacement, or repair. Contact the manufacturer directly using the information provided in the recall notice. For food recalls, discard the product or return it to the store.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map(item => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+};
+
+const toolSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Recall Checker',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  description: `Check if any product has been recalled. Search ${formatNumber(totalCount)} recalls from FDA, CPSC, NHTSA, and USDA.`,
+  url: 'https://plainrecalls.com/checker/',
+  creator: {
+    '@type': 'Organization',
+    name: 'PlainRecalls',
+  },
+};
+---
+
+<Base
+  title="Is My Product Recalled? — Free Recall Checker | PlainRecalls"
+  description={`Check if any product has been recalled across FDA, CPSC, NHTSA, and USDA. Search ${formatNumber(totalCount)} recalls by product name, brand, or keyword.`}
+  breadcrumbs={breadcrumbs}
+  schema={[faqSchema, toolSchema]}
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-red-50 to-white dark:from-gray-900 dark:to-gray-950">
+    <div class="mx-auto max-w-7xl px-4 py-16 text-center md:py-24">
+      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-5xl">
+        Is My Product Recalled?
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        Check if any product has been recalled. Search {formatNumber(totalCount)} recalls from FDA, CPSC, NHTSA, and USDA — free and updated daily.
+      </p>
+      <form action="/search" method="get" class="mx-auto mt-8 max-w-xl">
+        <div class="flex gap-2">
+          <input
+            type="search"
+            name="q"
+            placeholder="e.g. infant formula, Toyota Camry, ibuprofen..."
+            class="search-input flex-1"
+            aria-label="Check if a product is recalled"
+            required
+          />
+          <button type="submit" class="rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors">
+            Check
+          </button>
+        </div>
+      </form>
+      <p class="mt-3 text-sm text-gray-500 dark:text-gray-500">
+        Enter a product name, brand, or model number to search recall records.
+      </p>
+    </div>
+  </section>
+
+  <!-- Stats Banner -->
+  <section class="section !py-8 bg-gray-50 dark:bg-gray-900/50">
+    <div class="mx-auto max-w-5xl px-4">
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">{formatNumber(totalCount)}</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Total Recalls</div>
+        </div>
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">5</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Federal Agencies</div>
+        </div>
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">12</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Product Categories</div>
+        </div>
+        <div class="card !p-4 text-center">
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">Daily</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Update Frequency</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Category Buttons -->
+  <section class="section">
+    <div class="mx-auto max-w-5xl px-4">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Browse by Category</h2>
+      <p class="mt-2 text-center text-gray-600 dark:text-gray-400">
+        Jump directly to recalls in a specific product category.
+      </p>
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+        {QUICK_CATEGORIES.map(cat => (
+          <a href={`/category/${cat.slug}`} class="card flex flex-col items-center gap-2 py-5 hover:shadow-md transition-shadow text-center">
+            <span class="text-3xl">{cat.icon}</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">{cat.label}</span>
+          </a>
+        ))}
+      </div>
+      <p class="mt-4 text-center">
+        <a href="/category" class="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">
+          View all categories &rarr;
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <AdSlot slot="mid" />
+
+  <!-- How to Check -->
+  <section class="section bg-gray-50 dark:bg-gray-900/50">
+    <div class="mx-auto max-w-5xl px-4">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center">How to Check if a Product Is Recalled</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {STEPS.map(step => (
+          <div class="card text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-500/10 text-xl font-bold text-primary-600 dark:text-primary-400">
+              {step.num}
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-white">{step.title}</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="mx-auto max-w-3xl px-4">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+      <div class="mt-6 space-y-4">
+        {FAQ_ITEMS.map(item => (
+          <div class="card">
+            <h3 class="font-semibold text-gray-900 dark:text-white">{item.q}</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

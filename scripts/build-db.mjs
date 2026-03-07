@@ -365,6 +365,10 @@ function main() {
     CREATE INDEX idx_recalls_slug ON recalls(slug);
     CREATE INDEX idx_manufacturers_slug ON manufacturers(slug);
     CREATE INDEX idx_categories_slug ON categories(slug);
+    CREATE INDEX IF NOT EXISTS idx_recalls_agency_date ON recalls(agency, date_reported DESC);
+    CREATE INDEX IF NOT EXISTS idx_recalls_category_date ON recalls(category_id, date_reported DESC);
+    CREATE INDEX IF NOT EXISTS idx_recalls_state ON recalls(state);
+    CREATE INDEX IF NOT EXISTS idx_recalls_manufacturer_date ON recalls(manufacturer_id, date_reported DESC);
   `);
 
   // Insert agencies
@@ -463,6 +467,11 @@ function main() {
   db.prepare('CREATE INDEX IF NOT EXISTS idx_recalls_firm ON recalls(recalling_firm)').run();
   db.prepare('CREATE INDEX IF NOT EXISTS idx_recalls_number ON recalls(recall_number)').run();
 
+  console.log('\nFinalizing database...');
+  db.exec('ANALYZE');
+  db.pragma('journal_mode = DELETE');
+  db.exec('VACUUM');
+  console.log('Finalized (ANALYZE + journal_mode=DELETE + VACUUM)');
   db.close();
 
   // Summary
