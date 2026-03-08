@@ -243,3 +243,11 @@ export async function getAllManufacturerSlugs(env: Env): Promise<string[]> {
   const { results } = await env.DB.prepare('SELECT slug FROM manufacturers WHERE recall_count > 0').all<{ slug: string }>();
   return results.map(r => r.slug);
 }
+
+export async function warmQueryCache(db: D1Database): Promise<number> {
+  const start = Date.now();
+  await Promise.all([
+  ]);
+  console.log(`[cache] Warmed ${queryCache.size} queries in ${Date.now() - start}ms`);
+  return queryCache.size;
+}
