@@ -1,0 +1,21 @@
+services:
+  portal-plainrecalls:
+    image: ghcr.io/kiznis-studio/portal-plainrecalls:latest
+    container_name: portal-plainrecalls
+    restart: unless-stopped
+    volumes:
+      - /opt/portals/data/sqlite/plainrecalls.db:/data/portal.db:ro
+    environment:
+      - DATABASE_PATH=/data/portal.db
+      - HOST=0.0.0.0
+      - PORT=4321
+      - CACHE_ENTRIES=500
+    networks:
+      - portals
+    mem_limit: 256m
+    cpus: 0.5
+
+networks:
+  portals:
+    external: true
+    name: portals-net
