@@ -246,7 +246,16 @@ export async function getAllManufacturerSlugs(env: Env): Promise<string[]> {
 
 export async function warmQueryCache(db: D1Database): Promise<number> {
   const start = Date.now();
+  const env = { DB: db } as Env;
   await Promise.all([
+    getRecentRecalls(env),
+    getAllCategories(env),
+    getTopManufacturers(env),
+    getAllAgencies(env),
+    getAgencyStats(env),
+    getTotalRecallCount(env),
+    getYearRange(env),
+    getRecallCountByYear(env),
   ]);
   console.log(`[cache] Warmed ${queryCache.size} queries in ${Date.now() - start}ms`);
   return queryCache.size;
