@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AdSlot from '../../components/ads/AdSlot.astro';
-import { getRecallBySlug, getRelatedRecalls } from '../../lib/db';
+import { getRecallBySlug, getRelatedRecalls, getAllCategories } from '../../lib/db';
 import { agencyLabel, formatDate, severityLabel, severityBg, classLabel, statusLabel, truncate } from '../../lib/format';
 
 const { slug } = Astro.params;
@@ -9,7 +9,7 @@ const env = Astro.locals.runtime.env;
 const recall = await getRecallBySlug(env, slug!);
 if (!recall) return Astro.redirect('/404');
 
-const related = await getRelatedRecalls(env, recall, 5);
+const related = await getRelatedRecalls(env, recall, 6);
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
@@ -19,6 +19,23 @@ const breadcrumbs = [
 
 const severityMap: Record<number, string> = { 1: 'Critical', 2: 'Moderate', 3: 'Low' };
 
+// Data-rich title with key metrics
+const titleParts = [truncate(recall.title, 80)];
+if (recall.severity) titleParts.push(severityMap[recall.severity] || 'Unknown');
+if (recall.recalling_firm) titleParts.push(recall.recalling_firm);
+const title = `${titleParts.join(' — ')} | ${agencyLabel(recall.agency)} Recall | PlainRecalls`;
+const description = truncate(
+  `${recall.title}. ${recall.reason || recall.product_description || ''}${recall.recalling_firm ? ` Recalled by ${recall.recalling_firm}.` : ''}${recall.date_reported ? ` Reported ${formatDate(recall.date_reported)}.` : ''}${recall.affected_count ? ` ${recall.affected_count} units affected.` : ''}`,
+  155
+);
+
+// Determine agency type for cross-DB linking
+const isVehicle = recall.agency === 'nhtsa';
+const isDrug = recall.agency === 'fda_drug' || recall.agency === 'fda_device';
+const isFood = recall.agency === 'fda_food' || recall.agency === 'usda';
+const isCPSC = recall.agency === 'cpsc';
+
+// FAQ items
 const faqItems: { q: string; a: string }[] = [];
 if (recall.product_description || recall.title) {
   faqItems.push({
@@ -42,6 +59,16 @@ faqItems.push({
   q: `Which agency issued this recall?`,
   a: `This recall was issued by the ${agencyLabel(recall.agency)}${recall.date_reported ? ` on ${formatDate(recall.date_reported)}` : ''}.${recall.severity ? ` Severity: ${severityMap[recall.severity] || 'Unknown'}.` : ''}${recall.recall_number ? ` Recall number: ${recall.recall_number}.` : ''}`
 });
+if (recall.distribution) {
+  faqItems.push({
+    q: `Where was the recalled product distributed?`,
+    a: `Distribution: ${recall.distribution}.`
+  });
+}
+faqItems.push({
+  q: `How do I check if my product is affected by a recall?`,
+  a: `Check the product description and recall number (${recall.recall_number || 'see above'}) against your product. Visit the official ${agencyLabel(recall.agency)} website for the most current information. You can also use our Recall Checker tool to search by product name or brand.`
+});
 
 const faqSchema = JSON.stringify({
   '@context': 'https://schema.org',
@@ -64,35 +91,35 @@ const breadcrumbSchema = JSON.stringify({
   })),
 });
 
-const recallSchema = JSON.stringify({
+// Dataset schema (NOT Product — this is a data page, not a product page)
+const datasetSchema = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'Product',
-  name: recall.product_description || recall.title,
+  '@type': 'Dataset',
+  name: `${agencyLabel(recall.agency)} Recall: ${truncate(recall.title, 100)}`,
   description: recall.reason || recall.product_description || recall.title,
-  ...(recall.recalling_firm && { brand: { '@type': 'Brand', name: recall.recalling_firm } }),
-  ...(recall.recalling_firm && { manufacturer: { '@type': 'Organization', name: recall.recalling_firm } }),
-  review: {
-    '@type': 'Review',
-    name: `Recall: ${truncate(recall.title, 80)}`,
-    reviewBody: recall.reason || recall.title,
-    author: { '@type': 'Organization', name: agencyLabel(recall.agency) },
-    ...(recall.date_reported && { datePublished: recall.date_reported }),
-    reviewRating: {
-      '@type': 'Rating',
-      worstRating: 1,
-      bestRating: 3,
-      ratingValue: recall.severity === 1 ? 1 : recall.severity === 2 ? 2 : 3,
-      ratingExplanation: `${severityMap[recall.severity] || 'Unknown'} severity recall`,
-    },
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  ...(recall.date_reported && { datePublished: recall.date_reported }),
+  creator: {
+    '@type': 'Organization',
+    name: agencyLabel(recall.agency),
+  },
+  distribution: {
+    '@type': 'DataDownload',
+    encodingFormat: 'text/html',
+    contentUrl: new URL(Astro.url.pathname, Astro.site).href,
   },
 });
 ---
 
 <Base
-  title={`${truncate(recall.title, 100)} | PlainRecalls`}
-  description={truncate(recall.reason || recall.product_description || recall.title, 155)}
+  title={title}
+  description={description}
   breadcrumbs={breadcrumbs}
 >
+  <script type="application/ld+json" set:html={breadcrumbSchema} />
+  <script type="application/ld+json" set:html={faqSchema} />
+  <script type="application/ld+json" set:html={datasetSchema} />
+
   <div class="mx-auto max-w-4xl px-4 py-8 md:py-12">
     <!-- Header -->
     <div class="flex flex-wrap items-center gap-2 text-sm">
@@ -116,9 +143,12 @@ const recallSchema = JSON.stringify({
       {recall.date_reported && <span>Reported: {formatDate(recall.date_reported)}</span>}
       {recall.date_initiated && <span>Initiated: {formatDate(recall.date_initiated)}</span>}
       {recall.recall_number && <span>#{recall.recall_number}</span>}
+      {recall.affected_count && <span>{recall.affected_count} units</span>}
     </div>
 
-    <!-- Details -->
+    <AdSlot slot="top" />
+
+    <!-- H2 #1: Product Description -->
     <div class="mt-8 space-y-6">
       {recall.product_description && (
         <div class="card">
@@ -127,6 +157,7 @@ const recallSchema = JSON.stringify({
         </div>
       )}
 
+      <!-- H2 #2: Reason for Recall -->
       {recall.reason && (
         <div class="card border-amber-200 dark:border-amber-800/50">
           <h2 class="text-lg font-semibold text-amber-700 dark:text-amber-400">Reason for Recall</h2>
@@ -134,6 +165,7 @@ const recallSchema = JSON.stringify({
         </div>
       )}
 
+      <!-- Hazard -->
       {recall.hazard && recall.hazard !== recall.reason && (
         <div class="card border-red-200 dark:border-red-800/50">
           <h2 class="text-lg font-semibold text-amber-700 dark:text-amber-400">Hazard</h2>
@@ -141,6 +173,7 @@ const recallSchema = JSON.stringify({
         </div>
       )}
 
+      <!-- H2 #3: Remedy -->
       {recall.remedy && (
         <div class="card border-teal-200 dark:border-teal-800/50">
           <h2 class="text-lg font-semibold text-teal-700 dark:text-teal-400">Remedy</h2>
@@ -148,7 +181,7 @@ const recallSchema = JSON.stringify({
         </div>
       )}
 
-      <!-- Metadata -->
+      <!-- H2 #4: Details -->
       <div class="card">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Details</h2>
         <dl class="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
@@ -193,7 +226,7 @@ const recallSchema = JSON.stringify({
 
     <AdSlot slot="mid" />
 
-    <!-- FAQ -->
+    <!-- H2 #5: FAQ -->
     <div class="mt-8">
       <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
       <div class="space-y-3">
@@ -209,11 +242,70 @@ const recallSchema = JSON.stringify({
       </div>
     </div>
 
-    <!-- Related Recalls -->
+    <!-- H2 #6: Cross-DB Enrichment Links -->
+    <div class="mt-10">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Related Safety Data</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Explore related product safety and public health data from federal sources.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {isVehicle && (
+          <a href="https://plaincars.com" target="_blank" rel="noopener"
+            class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+            <p class="text-lg mb-1">&#128663;</p>
+            <p class="font-bold text-gray-900 dark:text-white">Vehicle Safety Data</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">NHTSA complaints, investigations, and reliability scores for 3,500+ vehicle models with 2M+ complaints.</p>
+            <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">PlainCars &rarr;</p>
+          </a>
+        )}
+        {isDrug && (
+          <a href="https://plainmeds.com" target="_blank" rel="noopener"
+            class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+            <p class="text-lg mb-1">&#128138;</p>
+            <p class="font-bold text-gray-900 dark:text-white">Drug Information</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">FDA drug data for 680+ medications — interactions, alternatives, side effects, and safety information.</p>
+            <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">PlainMeds &rarr;</p>
+          </a>
+        )}
+        {isFood && (
+          <a href="https://getfoodfacts.com" target="_blank" rel="noopener"
+            class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+            <p class="text-lg mb-1">&#127829;</p>
+            <p class="font-bold text-gray-900 dark:text-white">Nutrition Data</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">USDA nutrition facts for 2M+ food items — calories, macros, vitamins, and ingredient analysis.</p>
+            <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">GetFoodFacts &rarr;</p>
+          </a>
+        )}
+        {isCPSC && (
+          <a href="https://plainbreed.com" target="_blank" rel="noopener"
+            class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+            <p class="text-lg mb-1">&#128054;</p>
+            <p class="font-bold text-gray-900 dark:text-white">Pet Product Safety</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">FDA animal adverse event reports — medication reactions and product safety data for 500+ breeds.</p>
+            <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">PlainBreed &rarr;</p>
+          </a>
+        )}
+        <a href="/checker/" 
+          class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+          <p class="text-lg mb-1">&#128269;</p>
+          <p class="font-bold text-gray-900 dark:text-white">Recall Checker</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Search our database of 83K+ recalls by product name, brand, or recall number across all agencies.</p>
+          <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">Check Now &rarr;</p>
+        </a>
+        <a href="/radar/"
+          class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+          <p class="text-lg mb-1">&#128225;</p>
+          <p class="font-bold text-gray-900 dark:text-white">Recall Radar</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Live feed of the latest recalls across FDA, CPSC, NHTSA, and USDA — filter by agency and severity.</p>
+          <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">View Radar &rarr;</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- H2 #7: Related Recalls -->
     {related.length > 0 && (
-      <div class="mt-12">
+      <div class="mt-10">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white">Related Recalls</h2>
-        <div class="mt-4 space-y-3">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">Other recalls in the same product category.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           {related.map(r => (
             <a href={`/recall/${r.slug}`} class="block card hover:shadow-md transition-shadow">
               <div class="flex items-center gap-2">
@@ -228,16 +320,20 @@ const recallSchema = JSON.stringify({
       </div>
     )}
 
-    <!-- Cross-Portal Links -->
-    <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800">
-      <h3 class="text-sm font-semibold uppercase tracking-wider mb-3 text-gray-900 dark:text-white">Explore Related Data</h3>
-      <div class="flex flex-wrap gap-2">
-        <a href="https://plaincars.com" class="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-colors text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400" target="_blank" rel="noopener">Vehicle Safety →</a>
-        <a href="https://plainmeds.com" class="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-colors text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400" target="_blank" rel="noopener">Drug Information →</a>
+    <!-- H2 #8: Data Sources -->
+    <div class="mt-10">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Data Sources</h2>
+      <div class="card text-sm text-gray-600 dark:text-gray-400">
+        <ul class="space-y-1 list-disc list-inside">
+          <li><strong>FDA:</strong> Food and Drug Administration — food, drug, and medical device recalls via openFDA</li>
+          <li><strong>CPSC:</strong> Consumer Product Safety Commission — consumer product recalls and hazards</li>
+          <li><strong>NHTSA:</strong> National Highway Traffic Safety Administration — vehicle safety recalls</li>
+          <li><strong>USDA FSIS:</strong> Food Safety and Inspection Service — meat, poultry, and egg product recalls</li>
+        </ul>
+        <p class="mt-3">Recall information is sourced from official federal agency databases. Always verify recall details with the issuing agency for the most current status. This information is for research and awareness purposes only.</p>
       </div>
     </div>
   </div>
-  <script type="application/ld+json" set:html={breadcrumbSchema} />
-  <script type="application/ld+json" set:html={faqSchema} />
-  <script type="application/ld+json" set:html={recallSchema} />
+
+  <AdSlot slot="bottom" />
 </Base>
