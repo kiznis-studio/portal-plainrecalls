@@ -1,0 +1,103 @@
+---
+export const prerender = false;
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: 'How do I check if my car has an open recall?', a: 'Enter your Vehicle Identification Number (VIN) at nhtsa.gov/recalls or call 1-888-327-4236. The VIN is on your registration, insurance card, or visible through the windshield on the driver\'s side dashboard. You can also ask your dealer to check during routine service. PlainRecalls shows all NHTSA recall campaigns searchable by make and model.' },
+  { q: 'How do I find the lot number on a food product?', a: 'Lot numbers (also called batch codes) are typically printed near the expiration date on the packaging. They may be embossed, ink-stamped, or printed on the label. Look on the bottom or back of cans, the top flap of boxes, and the seal area of bags. When a food recall is issued, it always specifies the affected lot numbers, UPC codes, and date ranges.' },
+  { q: 'Can I return a recalled product without a receipt?', a: 'For consumer product recalls (CPSC), you generally do not need a receipt — the recall notice specifies the remedy process. For food recalls, most stores accept returns without a receipt if you have the product. For vehicle recalls, no receipt or proof of purchase is needed — your VIN is sufficient. The manufacturer is legally required to provide the remedy regardless.' },
+  { q: 'What if the recalled product injured someone?', a: 'Document the injury and preserve the product as evidence. File a report with the relevant agency: SaferProducts.gov for consumer products, MedWatch for FDA products, or nhtsa.gov for vehicles. You may have a legal claim for damages — consider consulting a product liability attorney. The recall itself does not prevent you from pursuing legal action.' },
+  { q: 'How do I report a dangerous product?', a: 'File a complaint with the appropriate agency: SaferProducts.gov for consumer products (CPSC), fda.gov/safety/report-problem for food and drugs, or nhtsa.gov/report-a-safety-problem for vehicles. Your report may trigger an investigation that leads to a recall. Reports can be filed anonymously.' },
+  { q: 'Do recalled medications need to be returned?', a: 'It depends on the recall. Some drug recalls ask you to return the medication to the pharmacy. Others advise you to dispose of it and contact your doctor for an alternative. Never continue using a recalled medication unless your doctor specifically advises that the risk of stopping outweighs the recall risk. Check the specific recall notice for instructions.' },
+];
+---
+
+<Base title="How to Check If Your Products Are Recalled" description="Step-by-step guide to checking food, consumer products, medications, and vehicles for active recalls using official federal databases.">
+  <article class="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">How to Check If Your Products Are Recalled</h1>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">A practical guide to protecting yourself and your family from recalled products.</p>
+
+    <div class="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 mb-8">
+      <p class="font-semibold text-amber-800 dark:text-amber-200 mb-1">Key Takeaway</p>
+      <p class="text-sm text-amber-700 dark:text-amber-300">Most recalled products sit in homes unnoticed. Check your vehicles by VIN at nhtsa.gov. Search food and drugs by brand or product name on PlainRecalls. For consumer products, check model numbers against CPSC recalls. Make it a habit — a 5-minute check can prevent serious injuries.</p>
+    </div>
+
+    <div class="prose dark:prose-invert max-w-none space-y-6">
+      <section>
+        <h2>Checking Vehicles</h2>
+        <p>Vehicle recalls are the easiest to check because every vehicle has a unique VIN. Your VIN is a 17-character code found on your registration, insurance documents, and visible through the windshield on the driver's side dashboard.</p>
+        <p>Enter your VIN at NHTSA's recall lookup to see all open (unrepaired) recalls for your specific vehicle. If a recall is open, contact any authorized dealership to schedule a free repair — you don't need to go to the selling dealer. PlainRecalls shows all <a href="/agency/nhtsa" class="text-red-600 dark:text-red-400 hover:underline">NHTSA recall campaigns</a> searchable by make, model, and year.</p>
+        <p>Pro tip: check your VIN every few months. New recalls are issued regularly, and a vehicle that was clear last year may have a new recall today.</p>
+      </section>
+
+      <section>
+        <h2>Checking Food Products</h2>
+        <p>Food recalls are identified by specific lot numbers, UPC codes, and date ranges. When you hear about a food recall:</p>
+        <ol>
+          <li>Check the brand name and product description against the recall notice.</li>
+          <li>Find the lot number on your product (usually near the expiration date).</li>
+          <li>Compare the lot number and date codes against the recalled lots listed in the notice.</li>
+          <li>If your product matches: stop consuming it, discard it or return it to the store for a refund.</li>
+        </ol>
+        <p>Search PlainRecalls for <a href="/agency/fda" class="text-red-600 dark:text-red-400 hover:underline">FDA food recalls</a> by product name or manufacturer. The <a href="/radar" class="text-red-600 dark:text-red-400 hover:underline">recall radar</a> shows trending and recent recalls at a glance.</p>
+      </section>
+
+      <section>
+        <h2>Checking Consumer Products</h2>
+        <p>Consumer product recalls (toys, appliances, furniture, electronics) are identified by brand, model number, and sometimes date of manufacture. To check:</p>
+        <ol>
+          <li>Find the product's brand, model number, and manufacturing date (usually on a label or sticker on the bottom or back).</li>
+          <li>Search PlainRecalls by <a href="/manufacturer/" class="text-red-600 dark:text-red-400 hover:underline">manufacturer</a> or <a href="/category/" class="text-red-600 dark:text-red-400 hover:underline">category</a>.</li>
+          <li>If your product matches a recall, follow the remedy instructions — this may be a refund, free replacement, or repair kit.</li>
+        </ol>
+        <p>Pay special attention to children's products, small kitchen appliances, and space heaters — these categories have the highest recall rates and the most serious hazards (fire, choking, electrical shock).</p>
+      </section>
+
+      <section>
+        <h2>Checking Medications and Supplements</h2>
+        <p>Drug and supplement recalls specify the product name, NDC (National Drug Code) or lot number, strength, and manufacturer. Check your medication bottles against FDA recall announcements. If your medication is recalled:</p>
+        <ul>
+          <li>Do not abruptly stop taking a prescribed medication without consulting your doctor — the risk of stopping may outweigh the recall risk.</li>
+          <li>Contact your pharmacist for a replacement from a different lot or manufacturer.</li>
+          <li>Follow the specific disposal or return instructions in the recall notice.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Building a Recall-Check Habit</h2>
+        <p>The best protection is making recall checks routine:</p>
+        <ul>
+          <li><strong>Vehicles:</strong> Check your VIN quarterly, or when you take your car in for service.</li>
+          <li><strong>Baby products:</strong> Register new products with the manufacturer so they can contact you directly if a recall is issued.</li>
+          <li><strong>Food:</strong> Sign up for FDA and USDA recall alerts by email.</li>
+          <li><strong>Everything else:</strong> Browse PlainRecalls' <a href="/recent" class="text-red-600 dark:text-red-400 hover:underline">recent recalls</a> weekly to stay current.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Frequently Asked Questions</h2>
+        <div class="not-prose space-y-3">
+          {faqItems.map(item => (
+            <details class="group border border-gray-200 dark:border-gray-700 rounded-lg">
+              <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800">{item.q}</summary>
+              <p class="px-4 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-2">Sources</h2>
+        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+          <li>FDA — fda.gov/safety/recalls-market-withdrawals-safety-alerts</li>
+          <li>CPSC — cpsc.gov/recalls</li>
+          <li>NHTSA — nhtsa.gov/recalls</li>
+        </ul>
+      </section>
+
+      <p class="text-xs italic text-gray-500 border-t border-gray-200 dark:border-gray-700 pt-4 mt-8">This content is for informational purposes only. Always follow official guidance from the relevant agency regarding recalled products.</p>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.q, "acceptedAnswer": { "@type": "Answer", "text": item.a } })) })} />
+</Base>

@@ -1,0 +1,128 @@
+---
+export const prerender = false;
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: 'What is an FDA Class I recall?', a: 'A Class I recall is the most serious FDA classification. It means the product has a reasonable probability of causing serious adverse health consequences or death. Examples include food contaminated with botulism toxin, defective pacemakers, or medications with incorrect active ingredients. Class I recalls require the most aggressive consumer notification and product removal.' },
+  { q: 'What does "market withdrawal" mean?', a: 'A market withdrawal is less serious than a recall. It occurs when a product has a minor violation that would not warrant legal action by the FDA — such as a labeling error that doesn\'t affect safety. The product is voluntarily removed from distribution. Market withdrawals are not classified as Class I, II, or III.' },
+  { q: 'Are all vehicle recalls equally urgent?', a: 'No. NHTSA categorizes vehicle recalls by hazard severity but doesn\'t use a formal class system like the FDA. Some recalls involve imminent danger (brake failure, airbag defects) while others address minor issues (incorrect labels, software glitches). The recall notice specifies whether you should stop driving immediately or schedule a repair at your convenience.' },
+  { q: 'What is a "safety alert" vs a "recall"?', a: 'A safety alert is an advisory warning about a potential hazard — it doesn\'t necessarily require a product to be returned or repaired. A recall is a formal action where the manufacturer must provide a remedy. Alerts sometimes precede recalls as the investigation unfolds. PlainRecalls tracks both and clearly labels each.' },
+  { q: 'How do I know if a recall is urgent?', a: 'Look at the classification: FDA Class I and CPSC recalls citing fire, electrocution, or choking hazards are most urgent — stop using the product immediately. FDA Class II and non-life-threatening CPSC recalls allow more time to act. FDA Class III recalls are the least urgent. Vehicle recalls specify whether you should stop driving immediately.' },
+  { q: 'What happens if a company ignores a recall?', a: 'Agencies have enforcement tools. The FDA can seize products, seek injunctions, and pursue criminal charges. CPSC can seek civil penalties up to $120,000 per violation (and $17.15 million total). NHTSA can fine manufacturers up to $115 million for non-compliance. In practice, most companies cooperate because non-compliance carries both legal and reputational risk.' },
+];
+---
+
+<Base title="Understanding Recall Severity Classes — FDA, CPSC, and NHTSA" description="What FDA Class I, II, and III mean, how CPSC and NHTSA classify recall urgency, and which recalls demand immediate action.">
+  <article class="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Understanding Recall Severity Classes</h1>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">Not all recalls are equally urgent. Here's how to assess the risk level.</p>
+
+    <div class="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 mb-8">
+      <p class="font-semibold text-amber-800 dark:text-amber-200 mb-1">Key Takeaway</p>
+      <p class="text-sm text-amber-700 dark:text-amber-300">FDA uses a three-tier classification: Class I (can cause death or serious injury), Class II (may cause temporary health problems), Class III (unlikely to cause harm). CPSC doesn't use formal classes but describes specific hazards. NHTSA categorizes by hazard type. Always read the specific recall notice — the classification tells you how urgently to act.</p>
+    </div>
+
+    <div class="prose dark:prose-invert max-w-none space-y-6">
+      <section>
+        <h2>FDA Recall Classifications</h2>
+        <p>The FDA classifies all food, drug, medical device, and supplement recalls into three tiers based on the potential health consequences:</p>
+        <div class="not-prose overflow-x-auto mb-4">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-gray-700">
+                <th class="text-left py-2 px-3 text-gray-900 dark:text-gray-100">Class</th>
+                <th class="text-left py-2 px-3 text-gray-900 dark:text-gray-100">Risk Level</th>
+                <th class="text-left py-2 px-3 text-gray-900 dark:text-gray-100">Examples</th>
+                <th class="text-left py-2 px-3 text-gray-900 dark:text-gray-100">Action Required</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700 dark:text-gray-300">
+              <tr class="border-b border-gray-200 dark:border-gray-700">
+                <td class="py-2 px-3 font-semibold text-red-600 dark:text-red-400">Class I</td>
+                <td class="px-3">Serious harm or death</td>
+                <td class="px-3">Contaminated food (Listeria, E. coli), defective medical devices, wrong medication dosage</td>
+                <td class="px-3">Stop using immediately</td>
+              </tr>
+              <tr class="border-b border-gray-200 dark:border-gray-700">
+                <td class="py-2 px-3 font-semibold text-amber-600 dark:text-amber-400">Class II</td>
+                <td class="px-3">Temporary health problems</td>
+                <td class="px-3">Undeclared allergens, medications below potency, cosmetics with irritants</td>
+                <td class="px-3">Stop using, seek medical advice if symptoms present</td>
+              </tr>
+              <tr class="border-b border-gray-200 dark:border-gray-700">
+                <td class="py-2 px-3 font-semibold text-yellow-600 dark:text-yellow-400">Class III</td>
+                <td class="px-3">Unlikely to cause harm</td>
+                <td class="px-3">Labeling errors, minor contamination below actionable levels</td>
+                <td class="px-3">Return for refund if convenient</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Class I recalls make up a minority of total recalls but generate the most media coverage and require the most aggressive response. On PlainRecalls, search by <a href="/rankings/" class="text-red-600 dark:text-red-400 hover:underline">severity ranking</a> to see the most critical active recalls.</p>
+      </section>
+
+      <section>
+        <h2>CPSC Recall Classifications</h2>
+        <p>The Consumer Product Safety Commission doesn't use a formal class system. Instead, each recall notice describes the specific hazard:</p>
+        <ul>
+          <li><strong>Fire hazard:</strong> The product can overheat, catch fire, or cause burns. Common in small appliances, batteries, and electronics.</li>
+          <li><strong>Choking hazard:</strong> Small parts can detach and be swallowed by children. Most common in toys and children's products.</li>
+          <li><strong>Laceration hazard:</strong> Sharp edges, broken parts, or shattering glass can cause cuts.</li>
+          <li><strong>Electrocution hazard:</strong> Faulty wiring, inadequate insulation, or grounding failures create shock risk.</li>
+          <li><strong>Fall/tip-over hazard:</strong> Furniture or appliances can tip onto children. A leading cause of child fatalities in recalled products.</li>
+          <li><strong>Strangulation hazard:</strong> Cords, strings, or gaps that can entrap a child's neck.</li>
+        </ul>
+        <p>Fire, electrocution, tip-over, and strangulation hazards should be treated with the same urgency as FDA Class I — stop using the product immediately. Browse CPSC recalls on PlainRecalls by <a href="/category/" class="text-red-600 dark:text-red-400 hover:underline">category</a> to check products in your home.</p>
+      </section>
+
+      <section>
+        <h2>NHTSA Vehicle Recall Classifications</h2>
+        <p>NHTSA classifies vehicle recalls by the type of defect rather than a severity scale. The most urgent vehicle recalls involve:</p>
+        <ul>
+          <li><strong>Brake failures:</strong> Loss of braking capability at any speed is an immediate danger.</li>
+          <li><strong>Airbag defects:</strong> Airbags that don't deploy in a crash, or that deploy unexpectedly or with excessive force. The Takata airbag recall — the largest in US history — involved inflators that could rupture and send metal fragments at occupants.</li>
+          <li><strong>Steering loss:</strong> Complete or intermittent loss of steering control.</li>
+          <li><strong>Fire risk:</strong> Fuel leaks, electrical shorts, or engine compartment fires.</li>
+          <li><strong>Structural failures:</strong> Wheels detaching, suspension collapse, or frame defects.</li>
+        </ul>
+        <p>Some vehicle recalls include a "Do Not Drive" advisory — this is the most urgent classification and means the vehicle is not safe to operate at all until the repair is completed.</p>
+      </section>
+
+      <section>
+        <h2>How to Assess Urgency</h2>
+        <p>When you encounter a recall, assess urgency with this framework:</p>
+        <ol>
+          <li><strong>Can it kill or cause serious injury?</strong> FDA Class I, CPSC fire/electrocution/tip-over, NHTSA brake/airbag/steering — stop using immediately.</li>
+          <li><strong>Can it cause temporary illness or minor injury?</strong> FDA Class II, CPSC laceration hazards — stop using soon, seek medical advice if symptoms present.</li>
+          <li><strong>Is it a labeling or minor compliance issue?</strong> FDA Class III — return at your convenience.</li>
+        </ol>
+        <p>When in doubt, stop using the product. The recall notice always specifies the exact action required.</p>
+      </section>
+
+      <section>
+        <h2>Frequently Asked Questions</h2>
+        <div class="not-prose space-y-3">
+          {faqItems.map(item => (
+            <details class="group border border-gray-200 dark:border-gray-700 rounded-lg">
+              <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800">{item.q}</summary>
+              <p class="px-4 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-2">Sources</h2>
+        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+          <li>FDA — 21 CFR Part 7: Enforcement Policy (Recall Classification)</li>
+          <li>CPSC — Recall Process and Hazard Classification</li>
+          <li>NHTSA — Defects and Recall Process</li>
+        </ul>
+      </section>
+
+      <p class="text-xs italic text-gray-500 border-t border-gray-200 dark:border-gray-700 pt-4 mt-8">This content is for informational purposes only. Always follow official guidance from the relevant agency. If a product has caused injury, seek medical attention and file a report with the appropriate agency.</p>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.q, "acceptedAnswer": { "@type": "Answer", "text": item.a } })) })} />
+</Base>

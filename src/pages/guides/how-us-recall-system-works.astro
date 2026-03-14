@@ -1,0 +1,94 @@
+---
+export const prerender = false;
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: 'Which agency handles food recalls?', a: 'The FDA handles most food recalls, including packaged foods, dietary supplements, and infant formula. The USDA\'s Food Safety and Inspection Service (FSIS) handles recalls of meat, poultry, and processed egg products. PlainRecalls tracks recalls from both agencies.' },
+  { q: 'Are all recalls mandatory?', a: 'Most recalls are technically voluntary — the manufacturer agrees to recall after the agency identifies a hazard. Mandatory recalls are rare and occur when a company refuses to cooperate. In practice, the distinction makes no difference to consumers: both types require the company to provide a remedy. The FDA gained mandatory food recall authority in 2011 under the Food Safety Modernization Act.' },
+  { q: 'How are consumers notified about recalls?', a: 'Notification depends on the product type. For vehicles, manufacturers must send letters to registered owners. For consumer products, CPSC issues press releases and posts notices on cpsc.gov. For food and drugs, FDA posts alerts and works with retailers to remove products from shelves. PlainRecalls aggregates all of these into a single searchable database.' },
+  { q: 'What should I do if I have a recalled product?', a: 'Stop using the product immediately. Follow the remedy instructions in the recall notice — this may be a refund, replacement, repair, or disposal instructions. For food: discard the product or return it to the store. For vehicles: contact your dealer to schedule a free repair. For consumer products: follow the manufacturer\'s specific instructions.' },
+  { q: 'How many products are recalled each year?', a: 'The FDA handles thousands of food and drug recalls per year. CPSC oversees approximately 300-400 consumer product recalls. NHTSA issues around 800-1,000 vehicle recall campaigns annually, affecting tens of millions of vehicles. The total number of individual products affected runs into the hundreds of millions.' },
+  { q: 'Do recalls expire?', a: 'No. Recalls do not have an expiration date. If a product was recalled, the remedy should be available indefinitely. For vehicles, manufacturers must fix safety defects for free regardless of the vehicle\'s age. For consumer products, contact the manufacturer to check if the remedy is still available.' },
+];
+---
+
+<Base title="How the US Recall System Works — A Complete Guide" description="The three federal agencies that manage product recalls, how recalls are initiated and classified, and what happens after a recall is announced.">
+  <article class="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">How the US Recall System Works</h1>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">Three agencies, thousands of recalls per year, and what it all means for you.</p>
+
+    <div class="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 mb-8">
+      <p class="font-semibold text-amber-800 dark:text-amber-200 mb-1">Key Takeaway</p>
+      <p class="text-sm text-amber-700 dark:text-amber-300">Three federal agencies run the US recall system: the FDA (food, drugs, medical devices), CPSC (consumer products), and NHTSA (vehicles). Each has different classification systems and processes, but all share the same goal — removing dangerous products from the market and providing remedies to consumers at no cost.</p>
+    </div>
+
+    <div class="prose dark:prose-invert max-w-none space-y-6">
+      <section>
+        <h2>The Three Recall Agencies</h2>
+        <p>Product safety in the US is split across three agencies, each responsible for different categories:</p>
+        <ul>
+          <li><strong>FDA (Food and Drug Administration):</strong> Food products, medications, medical devices, cosmetics, dietary supplements, and tobacco. The largest recall volume by number of events.</li>
+          <li><strong>CPSC (Consumer Product Safety Commission):</strong> Household products, toys, electronics, furniture, clothing, and sporting goods — essentially anything that isn't food, drugs, or vehicles.</li>
+          <li><strong>NHTSA (National Highway Traffic Safety Administration):</strong> Cars, trucks, motorcycles, tires, car seats, and motor vehicle equipment. The largest recall volume by number of individual units affected.</li>
+        </ul>
+        <p>PlainRecalls tracks recalls from all three agencies. Browse by <a href="/agency/" class="text-red-600 dark:text-red-400 hover:underline">agency</a> or search across all agencies simultaneously.</p>
+      </section>
+
+      <section>
+        <h2>How a Recall Starts</h2>
+        <p>Recalls are triggered through multiple channels:</p>
+        <ol>
+          <li><strong>Consumer complaints:</strong> Reports of injuries, illnesses, or product failures filed with the agency.</li>
+          <li><strong>Manufacturer self-reporting:</strong> Companies discover defects through quality control or customer service and voluntarily notify the agency.</li>
+          <li><strong>Agency surveillance:</strong> Routine inspections, sampling programs, and monitoring databases detect problems.</li>
+          <li><strong>Hospital/medical reports:</strong> Emergency rooms report injuries linked to specific products.</li>
+          <li><strong>International alerts:</strong> Problems discovered in other countries trigger US investigations.</li>
+        </ol>
+        <p>After a hazard is identified, the agency investigates, determines the scope, and works with the manufacturer on a recall plan. The entire process — from initial report to public announcement — can take weeks to months depending on the urgency.</p>
+      </section>
+
+      <section>
+        <h2>What Happens After a Recall</h2>
+        <p>Once a recall is announced, several things happen simultaneously:</p>
+        <ul>
+          <li><strong>Public notice:</strong> The agency publishes the recall on its website and issues press releases. PlainRecalls picks these up and makes them searchable.</li>
+          <li><strong>Retail removal:</strong> Stores are notified to pull the product from shelves. For food recalls, stores must check their inventory against specific lot numbers and UPC codes.</li>
+          <li><strong>Consumer remedy:</strong> The recall notice specifies the remedy — refund, replacement, repair, or disposal instructions.</li>
+          <li><strong>Monitoring:</strong> The agency tracks the recall's effectiveness. For vehicles, NHTSA monitors completion rates (what percentage of affected vehicles have been repaired).</li>
+        </ul>
+        <p>Check PlainRecalls' <a href="/recent" class="text-red-600 dark:text-red-400 hover:underline">recent recalls</a> page for the latest announcements, or use the <a href="/checker" class="text-red-600 dark:text-red-400 hover:underline">recall checker</a> to search for specific products.</p>
+      </section>
+
+      <section>
+        <h2>The Effectiveness Problem</h2>
+        <p>The biggest challenge with recalls is getting consumers to respond. CPSC estimates that only 10-20% of recalled consumer products are actually returned or repaired. Vehicle recall completion rates are higher — around 60-70% — because dealerships can check for open recalls during service visits. Food recalls are generally more effective because retailers remove products from shelves, but consumers who already purchased the item may not see the notice.</p>
+        <p>This is why PlainRecalls exists — the more places recall information appears, the more likely affected consumers are to see it and take action. Browse by <a href="/category/" class="text-red-600 dark:text-red-400 hover:underline">category</a> or <a href="/manufacturer/" class="text-red-600 dark:text-red-400 hover:underline">manufacturer</a> to check products you own.</p>
+      </section>
+
+      <section>
+        <h2>Frequently Asked Questions</h2>
+        <div class="not-prose space-y-3">
+          {faqItems.map(item => (
+            <details class="group border border-gray-200 dark:border-gray-700 rounded-lg">
+              <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800">{item.q}</summary>
+              <p class="px-4 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-2">Sources</h2>
+        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+          <li>FDA — Recalls, Market Withdrawals, and Safety Alerts</li>
+          <li>Consumer Product Safety Commission (CPSC) — cpsc.gov/recalls</li>
+          <li>National Highway Traffic Safety Administration (NHTSA) — nhtsa.gov/recalls</li>
+        </ul>
+      </section>
+
+      <p class="text-xs italic text-gray-500 border-t border-gray-200 dark:border-gray-700 pt-4 mt-8">This content is for informational purposes only. Always follow official guidance from the relevant agency. If you believe a product poses an immediate danger, stop using it and contact the agency directly.</p>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.q, "acceptedAnswer": { "@type": "Answer", "text": item.a } })) })} />
+</Base>
