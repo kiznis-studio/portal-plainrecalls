@@ -12,7 +12,13 @@ const guides = [
 <Base title="Recall Guides — PlainRecalls" description="Educational guides on product recalls, how to check for recalled products, and understanding recall severity from FDA, CPSC, and NHTSA data.">
   <div class="mx-auto max-w-4xl px-4 py-8 md:py-12">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Recall Guides</h1>
-    <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl">Learn how recalls work and how to protect yourself using official federal data.</p>
+    <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl">
+      Learn how recalls work and how to protect yourself using official federal data.
+      These guides cover the three agencies that manage US product recalls — the
+      FDA (food and drugs), CPSC (consumer products), and NHTSA (vehicles) —
+      explain severity classifications, and show you how to check 83,000+
+      recall records for items in your home.
+    </p>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {guides.map(g => (
         <a href={`/guides/${g.slug}`} class="block p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-red-400 dark:hover:border-red-500 transition-colors">
