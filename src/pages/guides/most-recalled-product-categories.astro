@@ -1,0 +1,312 @@
+---
+export const prerender = false;
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  {
+    q: 'What product category has the most recalls overall?',
+    a: 'Food and beverages consistently generate the highest volume of recalls, driven by the FDA\'s active surveillance of contamination, allergen mislabeling, and pathogen outbreaks. Within CPSC recalls, children\'s products — including toys, nursery equipment, and juvenile furniture — lead in recall volume. NHTSA vehicle recalls fluctuate by year based on major campaign sizes; the Takata airbag recall alone covered over 67 million vehicles across dozens of manufacturers, making it the largest recall in automotive history.',
+  },
+  {
+    q: 'Are toys dangerous? How many toy recalls happen each year?',
+    a: 'The CPSC issues 50 to 100+ toy recalls per year on average, though many involve small quantities from low-volume importers. The most common hazards in toy recalls are choking (small parts that detach), lead paint (particularly in imported products), and sharp edges. The Consumer Product Safety Improvement Act (CPSIA) of 2008 significantly tightened standards for children\'s products, requiring third-party testing for lead and phthalates. Despite this, enforcement remains challenging for products imported directly through e-commerce platforms. Toys from established brands with US retail presence have better compliance track records than mass-imported generic products.',
+  },
+  {
+    q: 'Why do so many food recalls happen?',
+    a: 'Food recalls occur at high volume for several reasons. The US food supply is enormous and distributed nationally — a single contaminated production run can affect millions of products. FDA and USDA run active surveillance programs using whole genome sequencing to trace foodborne illness outbreaks back to their source, which triggers recalls. Allergen mislabeling is the single most common reason for food recalls — it doesn\'t require anyone to get sick; an undeclared allergen (like milk or peanuts in a product labeled allergen-free) triggers a mandatory recall under FDA regulations. Finally, recall classification is conservative: FDA issues recalls on the basis of potential risk, not confirmed harm.',
+  },
+  {
+    q: 'Do vehicle recalls mean the car is unsafe to drive?',
+    a: 'Not always — it depends on the defect and how it manifests. Some recalls involve safety systems that activate in specific scenarios (e.g., airbag inflators that rupture in high humidity), while others involve components that degrade slowly over time. NHTSA classifies recall urgency through safety defect investigations. If a recall involves a loss-of-control hazard, brake failure, or airbag risk, take the vehicle out of service or limit use until the recall repair is completed. If the recall is for a minor software update or label correction, continued use while awaiting the repair is generally lower risk. Check the specific recall notice for NHTSA\'s guidance on continued operation.',
+  },
+  {
+    q: 'Which medical devices get recalled most often?',
+    a: 'FDA medical device recalls cluster heavily in cardiovascular devices (pacemakers, defibrillators, stents), infusion pumps and IV systems, diagnostic test kits, and orthopedic implants. The high recall rate in medical devices reflects the FDA\'s active post-market surveillance and the complexity of these products operating in high-stakes clinical environments. Many device recalls are Class II (may cause temporary adverse health consequences) rather than Class I (life-threatening). If you have an implanted medical device and receive a recall notice, contact your physician before taking any action — the risk of removing or replacing a device often exceeds the recall risk.',
+  },
+  {
+    q: 'Are secondhand or resale products subject to recall obligations?',
+    a: 'Generally no — recall obligations fall on manufacturers and authorized retailers, not private sellers. However, selling a known recalled product can create civil liability if it injures someone. CPSC rules prohibit retailers from selling recalled products but do not specifically govern private individual resales. If you sell or donate products through resale channels (eBay, Facebook Marketplace, thrift stores), check PlainRecalls or CPSC.gov before listing to avoid inadvertently transferring a recalled product. Some states have consumer protection laws that may extend liability to private sellers who knowingly sell defective products.',
+  },
+];
+---
+
+<Base
+  title="Most Recalled Product Categories — PlainRecalls"
+  description="Which product categories generate the most recalls from FDA, CPSC, and NHTSA? Rankings of the highest-recall categories, common hazard types, and what patterns the data reveals."
+>
+  <article class="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <div class="mb-4">
+      <a href="/guides/" class="text-sm text-red-600 dark:text-red-400 hover:underline">&larr; Recall Guides</a>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Most Recalled Product Categories</h1>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">Which product types generate the most recalls from the FDA, CPSC, and NHTSA — and what that means for your household.</p>
+
+    <!-- Key Takeaway -->
+    <div class="p-5 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 mb-8">
+      <p class="font-semibold text-red-800 dark:text-red-200 mb-2">Key Takeaway</p>
+      <p class="text-sm text-red-700 dark:text-red-300">Food recalls dominate by volume (FDA processes thousands annually), but consumer product recalls from CPSC matter most for household safety. Children's products, kitchen appliances, and vehicles consistently account for the highest-risk recalls. Knowing which categories are most recalled helps you prioritize which products to check most often.</p>
+    </div>
+
+    <div class="prose dark:prose-invert max-w-none space-y-6">
+
+      <section>
+        <h2>FDA Recall Categories: Food and Drugs Lead the Volume</h2>
+        <p>The FDA oversees recalls for food, beverages, dietary supplements, prescription drugs, over-the-counter medications, cosmetics, and medical devices. By volume, food and beverage recalls are the most frequent category — often driven by allergen mislabeling, pathogen contamination (Listeria, Salmonella, E. coli), or foreign material contamination.</p>
+
+        <div class="not-prose overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 my-4">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">FDA Category</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Recall Volume</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Most Common Reason</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Typical Class</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Food &amp; Beverages</td>
+                <td class="px-4 py-3">Highest — 1,000+/year</td>
+                <td class="px-4 py-3">Undeclared allergens, Listeria, Salmonella</td>
+                <td class="px-4 py-3">Class I–II</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Dietary Supplements</td>
+                <td class="px-4 py-3">High — 200+/year</td>
+                <td class="px-4 py-3">Undeclared drug ingredients, contamination</td>
+                <td class="px-4 py-3">Class I–II</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Prescription Drugs</td>
+                <td class="px-4 py-3">High — 150+/year</td>
+                <td class="px-4 py-3">Sub-potency, contamination, labeling errors</td>
+                <td class="px-4 py-3">Class II–III</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Medical Devices</td>
+                <td class="px-4 py-3">High — 1,000+/year (many minor)</td>
+                <td class="px-4 py-3">Software errors, sterility, labeling</td>
+                <td class="px-4 py-3">Class II (majority)</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">OTC Medications</td>
+                <td class="px-4 py-3">Moderate — 50+/year</td>
+                <td class="px-4 py-3">Contamination, potency, foreign material</td>
+                <td class="px-4 py-3">Class II</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Browse all <a href="/agency/fda" class="text-red-600 dark:text-red-400 hover:underline">FDA recalls on PlainRecalls</a> filtered by category.</p>
+      </section>
+
+      <section>
+        <h2>CPSC Recall Categories: Children's Products and Appliances Are Highest Risk</h2>
+        <p>The Consumer Product Safety Commission covers a broad range of consumer goods. Children's products consistently account for the largest share of recall volume, reflecting both the vulnerability of the population and the CPSIA's strict testing requirements that identify violations.</p>
+
+        <div class="not-prose overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 my-4">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">CPSC Category</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Recall Frequency</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Primary Hazards</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Who's at Risk</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Toys &amp; Games</td>
+                <td class="px-4 py-3">Very High</td>
+                <td class="px-4 py-3">Choking, lead, sharp edges, magnets</td>
+                <td class="px-4 py-3">Children under 8</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Nursery &amp; Infant Products</td>
+                <td class="px-4 py-3">Very High</td>
+                <td class="px-4 py-3">Suffocation, entrapment, strangulation</td>
+                <td class="px-4 py-3">Infants, toddlers</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Household Appliances</td>
+                <td class="px-4 py-3">High</td>
+                <td class="px-4 py-3">Fire, electrical shock, burn</td>
+                <td class="px-4 py-3">All ages</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Clothing &amp; Apparel</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Strangulation (drawstrings), flammability</td>
+                <td class="px-4 py-3">Children, toddlers</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Furniture</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Tip-over, entrapment, structural failure</td>
+                <td class="px-4 py-3">Children, elderly</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Sports &amp; Recreation</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Structural failure, fall, laceration</td>
+                <td class="px-4 py-3">All ages</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Tools &amp; Hardware</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Laceration, fire, electrical shock</td>
+                <td class="px-4 py-3">Adults, DIYers</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">E-bikes &amp; E-scooters</td>
+                <td class="px-4 py-3">Rising rapidly</td>
+                <td class="px-4 py-3">Lithium battery fires</td>
+                <td class="px-4 py-3">All ages</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Browse <a href="/category" class="text-red-600 dark:text-red-400 hover:underline">all CPSC recall categories</a> or search for specific products on PlainRecalls.</p>
+      </section>
+
+      <section>
+        <h2>NHTSA Recall Categories: Which Vehicle Systems Are Recalled Most</h2>
+        <p>NHTSA vehicle recalls are categorized by the affected vehicle system. Airbags and restraint systems lead recall volume due to multi-year, multi-manufacturer campaigns. Engine and fuel system recalls are among the most serious for fire risk.</p>
+
+        <div class="not-prose overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 my-4">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Vehicle System</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Recall Frequency</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Primary Hazard</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Notes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Airbags / Restraints</td>
+                <td class="px-4 py-3">Highest (by units)</td>
+                <td class="px-4 py-3">Inflator rupture, failure to deploy</td>
+                <td class="px-4 py-3">Takata recall: 67M+ vehicles</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Brakes</td>
+                <td class="px-4 py-3">Very High</td>
+                <td class="px-4 py-3">Loss of braking, brake failure</td>
+                <td class="px-4 py-3">Most urgent recall type</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Engine &amp; Fuel System</td>
+                <td class="px-4 py-3">High</td>
+                <td class="px-4 py-3">Fuel leak, fire, stall</td>
+                <td class="px-4 py-3">Fire risk = Class I equivalent</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Steering</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Loss of control</td>
+                <td class="px-4 py-3">High severity when affected</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Electrical Systems</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Fire, stall, warning light failure</td>
+                <td class="px-4 py-3">Rising with EV adoption</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Child Safety Seats</td>
+                <td class="px-4 py-3">Moderate</td>
+                <td class="px-4 py-3">Structural failure, harness defects</td>
+                <td class="px-4 py-3">Extremely high priority</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Software / ECU</td>
+                <td class="px-4 py-3">Rising rapidly</td>
+                <td class="px-4 py-3">Unexpected behavior, warning failures</td>
+                <td class="px-4 py-3">Many resolved by OTA update</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Browse all <a href="/agency/nhtsa" class="text-red-600 dark:text-red-400 hover:underline">NHTSA vehicle recalls</a> on PlainRecalls.</p>
+      </section>
+
+      <section>
+        <h2>Emerging Categories: What's Getting Recalled More</h2>
+        <p>Recall patterns shift as new product categories enter the market and regulators develop better surveillance tools. Categories with notably increasing recall activity include:</p>
+        <ul>
+          <li><strong>Lithium-ion battery products:</strong> E-bikes, e-scooters, hoverboards, and power tool batteries face growing CPSC scrutiny due to fire and explosion risk from thermal runaway. CPSC has flagged this as a priority safety concern.</li>
+          <li><strong>EV batteries and charging systems:</strong> NHTSA is increasingly scrutinizing electric vehicle battery management systems and charging infrastructure as EV adoption grows.</li>
+          <li><strong>Connected home devices:</strong> Smart home products with software vulnerabilities and unexpected behaviors are appearing more frequently in CPSC recall databases.</li>
+          <li><strong>CBD and hemp products:</strong> FDA enforcement actions on unapproved health claims and contaminated products are increasing in this category.</li>
+          <li><strong>Imported direct-to-consumer products:</strong> Products sold through third-party e-commerce platforms with limited regulatory oversight generate a growing share of CPSC enforcement actions.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Where to Check Your Products by Category</h2>
+        <p>PlainRecalls organizes the full recall database from all three major agencies so you can search by category, manufacturer, or keyword.</p>
+        <ul>
+          <li><a href="/category" class="text-red-600 dark:text-red-400 hover:underline">Browse all product categories &rarr;</a></li>
+          <li><a href="/agency/cpsc" class="text-red-600 dark:text-red-400 hover:underline">CPSC consumer product recalls &rarr;</a></li>
+          <li><a href="/agency/fda" class="text-red-600 dark:text-red-400 hover:underline">FDA food, drug, and device recalls &rarr;</a></li>
+          <li><a href="/agency/nhtsa" class="text-red-600 dark:text-red-400 hover:underline">NHTSA vehicle and equipment recalls &rarr;</a></li>
+          <li><a href="/radar/" class="text-red-600 dark:text-red-400 hover:underline">Recall radar — trending and recent recalls &rarr;</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Frequently Asked Questions</h2>
+        <div class="not-prose space-y-3">
+          {faqItems.map(item => (
+            <details class="group border border-gray-200 dark:border-gray-700 rounded-lg">
+              <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">{item.q}</summary>
+              <p class="px-4 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-2">Sources</h2>
+        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+          <li>CPSC — cpsc.gov/Recalls (Consumer Product Safety Commission recall database)</li>
+          <li>FDA — fda.gov/safety/recalls-market-withdrawals-safety-alerts</li>
+          <li>NHTSA — nhtsa.gov/recalls (National Highway Traffic Safety Administration)</li>
+          <li>Consumer Product Safety Improvement Act (CPSIA), 2008</li>
+          <li>CPSC — Annual Report on the Administration of the Consumer Product Safety Act</li>
+        </ul>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-3">Related Guides</h2>
+        <ul class="text-sm space-y-2">
+          <li><a href="/guides/what-to-do-when-a-product-is-recalled" class="text-red-600 dark:text-red-400 hover:underline">What to Do When a Product Is Recalled &rarr;</a></li>
+          <li><a href="/guides/recall-severity-classes" class="text-red-600 dark:text-red-400 hover:underline">Understanding Recall Severity Classes &rarr;</a></li>
+          <li><a href="/guides/how-us-recall-system-works" class="text-red-600 dark:text-red-400 hover:underline">How the US Recall System Works &rarr;</a></li>
+        </ul>
+      </section>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": { "@type": "Answer", "text": item.a },
+    })),
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plainrecalls.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://plainrecalls.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "Most Recalled Product Categories", "item": "https://plainrecalls.com/guides/most-recalled-product-categories" },
+    ],
+  })} />
+</Base>

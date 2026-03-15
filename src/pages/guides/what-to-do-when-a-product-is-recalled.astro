@@ -1,0 +1,241 @@
+---
+export const prerender = false;
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  {
+    q: 'How do I find out if a product I own has been recalled?',
+    a: 'The fastest way is to search by product name, brand, or manufacturer on PlainRecalls. For vehicles, enter your VIN at nhtsa.gov or call 1-888-327-4236. For consumer products, search CPSC.gov by product name or browse by category. For food and drugs, check FDA.gov/safety/recalls-market-withdrawals-safety-alerts. Sign up for email alerts from each agency so future recalls come to you automatically.',
+  },
+  {
+    q: 'Am I entitled to a refund for a recalled product?',
+    a: 'It depends on the recall. Recalls can offer a full refund, partial refund, free repair, free replacement part, or a replacement product — the remedy is specified in each recall notice. For CPSC recalls, manufacturers are legally required to provide a "reasonable remedy." For FDA food recalls, most retailers will refund without a receipt. For NHTSA vehicle recalls, the repair is always free regardless of whether you purchased the vehicle new or used. You are generally entitled to whichever remedy the recall specifies, but that remedy is determined by the manufacturer and approved by the agency.',
+  },
+  {
+    q: 'What if the recall remedy is a repair I don't want — can I demand a refund instead?',
+    a: 'Not necessarily. The remedy is set by the manufacturer in consultation with the regulatory agency. If the recall specifies a free repair, you are entitled to that repair — the manufacturer is not automatically required to offer a cash refund instead. However, in some cases, particularly when repairs are unavailable or ineffective, agencies have required stronger remedies including full refunds. If you believe the offered remedy is inadequate, you can file a complaint with the relevant agency (CPSC, NHTSA, or FDA), which may influence future remedy determinations.',
+  },
+  {
+    q: 'What do I do if a recalled product already injured someone in my family?',
+    a: 'First, get appropriate medical attention. Second, preserve the product and all packaging as evidence — do not return it to the manufacturer without documenting it (photos, serial numbers) and consulting with an attorney first. Third, report the injury to the relevant agency: SaferProducts.gov for consumer products, MedWatch (fda.gov) for drugs and medical devices, or NHTSA for vehicles. Fourth, consult a product liability attorney — a recall itself is strong evidence of a defect, and you may have grounds for a personal injury or wrongful death claim. Filing an agency report does not waive your legal rights.',
+  },
+  {
+    q: 'How do I report a dangerous product that has not been recalled yet?',
+    a: 'You can report dangerous consumer products to CPSC at SaferProducts.gov — these reports are publicly visible and can trigger investigations. For vehicles, report safety defects at nhtsa.gov/report-a-safety-problem. For food and drugs, use FDA\'s MedWatch at fda.gov/safety/medwatch. For vehicles, the more complaints NHTSA receives about the same defect, the more likely they are to open an investigation and issue a recall. Your report matters even if it seems minor.',
+  },
+  {
+    q: 'How long does a vehicle recall repair take?',
+    a: 'It depends on whether the remedy part is available and how many vehicles are affected. For large recalls, dealers may need to order parts from the manufacturer. Call your local authorized dealership to check parts availability before scheduling an appointment. Some repairs take 30 minutes; others take several hours. Dealerships are required to perform recall repairs at no cost to you, even if you\'re not a regular customer of that dealer.',
+  },
+];
+---
+
+<Base
+  title="What to Do When a Product Is Recalled — PlainRecalls"
+  description="Step-by-step guide to responding to product recalls: how to verify a recall applies to your product, claim your remedy, report injuries, and contact FDA, CPSC, and NHTSA."
+>
+  <article class="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <div class="mb-4">
+      <a href="/guides/" class="text-sm text-red-600 dark:text-red-400 hover:underline">&larr; Recall Guides</a>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">What to Do When a Product Is Recalled</h1>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">A step-by-step guide to verifying a recall, getting your remedy, reporting injuries, and navigating the process for FDA, CPSC, and NHTSA recalls.</p>
+
+    <!-- Key Takeaway -->
+    <div class="p-5 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 mb-8">
+      <p class="font-semibold text-amber-800 dark:text-amber-200 mb-2">Key Takeaway</p>
+      <p class="text-sm text-amber-700 dark:text-amber-300">Stop using the product immediately if the recall involves a safety hazard. Check whether your specific unit is affected using the lot numbers, VIN, or model number in the recall notice. Then follow the agency-specific remedy process — it's almost always free and usually straightforward. Don't ignore recalls: 70% of recalled consumer products stay in homes because owners don't act.</p>
+    </div>
+
+    <div class="prose dark:prose-invert max-w-none space-y-6">
+
+      <section>
+        <h2>Step 1: Stop Using the Product and Assess the Hazard</h2>
+        <p>When you learn of a recall, the first question is whether to stop using the product immediately. The answer depends on the hazard type and severity.</p>
+        <p><strong>Stop immediately if the recall involves:</strong> Fire or explosion hazard, electrical shock, chemical contamination, choking or strangulation risk to children, structural failure, or vehicle safety systems (brakes, airbags, steering).</p>
+        <p><strong>Continued use may be acceptable short-term if:</strong> The hazard only occurs under specific conditions described in the recall, or the recall is a Class III (minimal hazard) and your use pattern does not trigger the risk. Read the full recall notice to assess the actual hazard.</p>
+        <p>If you are unsure, stop using the product until you can verify it is not affected or until the remedy is completed.</p>
+      </section>
+
+      <section>
+        <h2>Step 2: Verify Whether Your Specific Product Is Affected</h2>
+        <p>Not every product with the recalled brand name is affected — recalls specify exact lot numbers, date codes, model numbers, VINs, or UPC codes. Before taking any action, confirm your specific unit is included.</p>
+
+        <div class="not-prose overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 my-4">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Product Type</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Where to Find the ID</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">What to Match</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Food / beverages</td>
+                <td class="px-4 py-3">Near expiration date, bottom or back of package</td>
+                <td class="px-4 py-3">Lot number, UPC code, "Best By" date range</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Medications / supplements</td>
+                <td class="px-4 py-3">Printed on bottle, blister pack, or box flap</td>
+                <td class="px-4 py-3">Lot number, NDC code, expiration date</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Consumer products (toys, appliances)</td>
+                <td class="px-4 py-3">Label on bottom, back, or inside battery compartment</td>
+                <td class="px-4 py-3">Model number, manufacture date code, SKU</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Vehicles</td>
+                <td class="px-4 py-3">Dashboard (driver's side, visible through windshield), door jamb sticker, registration</td>
+                <td class="px-4 py-3">17-digit VIN — check at nhtsa.gov/recalls</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">Medical devices</td>
+                <td class="px-4 py-3">Device label, packaging, accompanying documentation</td>
+                <td class="px-4 py-3">Serial number, lot number, model number</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>If your product's identifiers do not match what's listed in the recall notice, your specific unit is likely not affected — but stay alert for additional recall expansions, which are common.</p>
+      </section>
+
+      <section>
+        <h2>Step 3: Follow the Agency-Specific Remedy Process</h2>
+        <p>Each of the three main recall agencies has a different process for obtaining your remedy. The remedy (refund, repair, or replacement) is specified in every recall notice.</p>
+
+        <div class="not-prose overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 my-4">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Agency</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Products</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">How to Claim Remedy</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Contact</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">CPSC</td>
+                <td class="px-4 py-3">Consumer products, toys, appliances, furniture</td>
+                <td class="px-4 py-3">Contact manufacturer directly (phone/website in recall notice); return to retailer</td>
+                <td class="px-4 py-3">cpsc.gov | 1-800-638-2772</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">FDA</td>
+                <td class="px-4 py-3">Food, drugs, medical devices, cosmetics</td>
+                <td class="px-4 py-3">Stop using; return to store (food) or follow disposal instructions (drugs); contact doctor for prescription alternatives</td>
+                <td class="px-4 py-3">fda.gov | 1-800-551-3989</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">NHTSA</td>
+                <td class="px-4 py-3">Vehicles, car seats, tires, vehicle equipment</td>
+                <td class="px-4 py-3">Schedule free repair at any authorized dealership; check VIN status at nhtsa.gov/recalls</td>
+                <td class="px-4 py-3">nhtsa.gov | 1-888-327-4236</td>
+              </tr>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-4 py-3 font-medium">USDA FSIS</td>
+                <td class="px-4 py-3">Meat, poultry, egg products</td>
+                <td class="px-4 py-3">Discard or return to retailer; do not consume</td>
+                <td class="px-4 py-3">fsis.usda.gov | 1-888-674-6854</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>You can search the full recall database on PlainRecalls by <a href="/agency" class="text-red-600 dark:text-red-400 hover:underline">agency</a>, <a href="/category" class="text-red-600 dark:text-red-400 hover:underline">product category</a>, or <a href="/search" class="text-red-600 dark:text-red-400 hover:underline">keyword search</a>. Each recall record links to the official agency notice with specific remedy instructions.</p>
+      </section>
+
+      <section>
+        <h2>Step 4: Report Injuries or Near-Misses</h2>
+        <p>If a recalled product (or any dangerous product) has injured you or a family member, report it to the relevant agency. Reports serve two purposes: they protect others by triggering investigations, and they create an official record that supports any legal claim you may have.</p>
+        <ul>
+          <li><strong>Consumer products:</strong> <a href="https://www.saferproducts.gov" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">SaferProducts.gov</a> — reports are publicly searchable, which increases pressure on manufacturers to act</li>
+          <li><strong>FDA products (food, drugs, devices):</strong> <a href="https://www.fda.gov/safety/medwatch-fda-safety-information-and-adverse-event-reporting-program" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">FDA MedWatch</a></li>
+          <li><strong>Vehicles:</strong> <a href="https://www.nhtsa.gov/report-a-safety-problem" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">NHTSA Vehicle Safety Complaints</a></li>
+        </ul>
+        <p><strong>If the product injured someone seriously:</strong> Preserve the product as physical evidence — do not return it to the manufacturer before consulting a product liability attorney. Document everything with photos and retain all original packaging. Seek legal advice promptly, as statutes of limitations vary by state.</p>
+      </section>
+
+      <section>
+        <h2>What If the Manufacturer Doesn't Respond?</h2>
+        <p>Manufacturers are legally required to honor recall remedies, but enforcement varies in practice. If you have trouble getting your remedy:</p>
+        <ul>
+          <li>File a complaint with the relevant agency — CPSC, FDA, or NHTSA can follow up with manufacturers who are not honoring recall obligations</li>
+          <li>For CPSC recalls, contact the CPSC directly at 1-800-638-2772 or cpsc.gov/recall-problems</li>
+          <li>For vehicle recalls, if a dealer refuses or cannot perform the recall repair, contact NHTSA's Vehicle Safety Hotline at 1-888-327-4236</li>
+          <li>File a complaint with your state attorney general's consumer protection office</li>
+          <li>Consider small claims court if you incurred costs due to the recalled product and the manufacturer won't remedy</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>How to Stay Ahead of Future Recalls</h2>
+        <p>Most recalled products remain in use because owners don't know about the recall. Taking a few minutes to set up alerts dramatically reduces this risk:</p>
+        <ul>
+          <li><strong>Register new products</strong> — Product registration cards (physical or online) allow manufacturers to contact you directly when a recall is issued. This is especially important for baby products, car seats, and appliances.</li>
+          <li><strong>CPSC recall alerts</strong> — Subscribe at cpsc.gov/recalls for email notifications by product category</li>
+          <li><strong>NHTSA VIN alerts</strong> — Register your vehicle's VIN at nhtsa.gov/vehicle/recall to receive notification when a new recall affects your vehicle</li>
+          <li><strong>FDA MedWatch alerts</strong> — Subscribe at fda.gov for drug, food, and device recall alerts</li>
+          <li><strong>PlainRecalls radar</strong> — Browse the <a href="/radar/" class="text-red-600 dark:text-red-400 hover:underline">recall radar</a> regularly for trending and recent recalls across all agencies</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Frequently Asked Questions</h2>
+        <div class="not-prose space-y-3">
+          {faqItems.map(item => (
+            <details class="group border border-gray-200 dark:border-gray-700 rounded-lg">
+              <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">{item.q}</summary>
+              <p class="px-4 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-2">Sources</h2>
+        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+          <li>CPSC — cpsc.gov/Recalls (Consumer Product Safety Commission)</li>
+          <li>FDA — fda.gov/safety/recalls-market-withdrawals-safety-alerts</li>
+          <li>NHTSA — nhtsa.gov/recalls (National Highway Traffic Safety Administration)</li>
+          <li>USDA FSIS — fsis.usda.gov/recalls (Food Safety and Inspection Service)</li>
+          <li>SaferProducts.gov — Consumer product injury reporting portal</li>
+          <li>Consumer Product Safety Improvement Act (CPSIA), 2008</li>
+        </ul>
+      </section>
+
+      <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold mb-3">Related Guides</h2>
+        <ul class="text-sm space-y-2">
+          <li><a href="/guides/most-recalled-product-categories" class="text-red-600 dark:text-red-400 hover:underline">Most Recalled Product Categories &rarr;</a></li>
+          <li><a href="/guides/recall-severity-classes" class="text-red-600 dark:text-red-400 hover:underline">Understanding Recall Severity Classes &rarr;</a></li>
+          <li><a href="/guides/how-us-recall-system-works" class="text-red-600 dark:text-red-400 hover:underline">How the US Recall System Works &rarr;</a></li>
+        </ul>
+      </section>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": { "@type": "Answer", "text": item.a },
+    })),
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plainrecalls.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://plainrecalls.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "What to Do When a Product Is Recalled", "item": "https://plainrecalls.com/guides/what-to-do-when-a-product-is-recalled" },
+    ],
+  })} />
+</Base>
