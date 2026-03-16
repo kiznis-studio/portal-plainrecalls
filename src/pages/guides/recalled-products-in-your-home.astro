@@ -1,0 +1,320 @@
+---
+export const prerender = true;
+import Base from '../../layouts/Base.astro';
+
+const title = 'Recalled Products Still in Your Home: How to Do a Full Household Audit';
+const description = 'Millions of recalled products remain in use because owners never got notified. Learn how to systematically audit every room of your home for recalled items — furniture, appliances, food, medications, and more.';
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many recalled products are still in use in U.S. homes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Estimates vary, but NHTSA data consistently shows that vehicle recall completion rates hover around 70–75%, meaning roughly one in four recalled vehicles never gets fixed. For consumer products, completion rates are often lower — some CPSC recalls see completion rates below 20%. With hundreds of recalls issued each year and going back decades, tens of millions of recalled products are likely still in active use in American homes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why weren't I notified when my product was recalled?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Notification depends on registration. For vehicles, manufacturers can notify registered owners through DMV records. For consumer products, manufacturers can only directly contact consumers who registered their product — which most people skip. If you bought a product used, at a garage sale, or from a retailer who no longer carries it, there is often no way for the manufacturer or CPSC to reach you. This is why proactive checking is important."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What information do I need to check if a product is recalled?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For consumer products: brand name, model number, and production date or lot number (usually on a label on the bottom or back of the product). For vehicles: your 17-character Vehicle Identification Number (VIN), found on the dashboard near the windshield or inside the driver's door jamb. For food and medications: UPC code and lot/batch number from the product packaging. For appliances: model and serial number from the rating plate (usually inside a door, on the back, or underneath)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are older products from years ago still worth checking?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Recalls do not expire, and older recalls covering products from the 1990s through 2000s are still in the federal databases. Products like cribs, playpens, high chairs, and drop-side beds were recalled en masse following CPSC rule changes in the early 2010s — if you have children's furniture passed down through a family or bought used, those products may be covered by still-active recalls. Checking is free and takes minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I do if I find a recalled product I've been using for years?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stop using the product and follow the remedy instructions in the recall notice. For most consumer products, the manufacturer will provide a refund, replacement, or repair even years after the recall was announced — the remedy obligation doesn't expire. Contact the manufacturer directly using the phone number or website listed in the recall notice. If you cannot reach them, contact the relevant agency (CPSC at 1-800-638-2772 for consumer products, NHTSA at 1-888-327-4236 for vehicles, FDA MedWatch for medical devices)."
+      }
+    }
+  ]
+};
+---
+
+<Base title={title} description={description}
+  breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Guides', href: '/guides' }, { name: 'Recalled Products in Your Home' }]}
+>
+  <article class="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recalled Products Still in Your Home: How to Do a Full Household Audit</h1>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">Most recalled products are never returned. Here's how to find out what's in your home — room by room.</p>
+
+    <div class="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 mb-8">
+      <p class="font-semibold text-amber-800 dark:text-amber-200 mb-1">Key Takeaway</p>
+      <p class="text-sm text-amber-700 dark:text-amber-300">NHTSA vehicle recall completion rates average 70–75%, and CPSC consumer product recall completion rates can be even lower. Millions of recalled products — cribs, car seats, furniture, appliances, medications — remain in use in U.S. homes because owners were never notified. A systematic household audit using federal databases takes one to two hours and can identify hazards you didn't know you owned.</p>
+    </div>
+
+    <div class="prose dark:prose-invert max-w-none space-y-6">
+
+      <section>
+        <h2>Why So Many Recalled Products Stay in Homes</h2>
+        <p>
+          The gap between "product recalled" and "product removed from use" is wider than most people realize. The core problem is notification: most recall systems depend on manufacturers being able to contact the product's current owner, and that linkage breaks down in multiple ways.
+        </p>
+        <p>
+          <strong>Product registration is optional and rarely completed.</strong> Manufacturers encourage consumers to register products with their contact information, but most people skip this step. Without a registration database, a manufacturer recalling a product has no way to reach owners directly.
+        </p>
+        <p>
+          <strong>Products change hands.</strong> Garage sales, Facebook Marketplace, Craigslist, thrift stores, and family hand-me-downs all transfer products to new owners with no paper trail. A crib sold at a garage sale in 2012 that was recalled in 2010 could still be in active use in 2026 — the current owner may have no idea.
+        </p>
+        <p>
+          <strong>Recalls are not indexed in the purchase ecosystem.</strong> When you buy a used product, there is no automatic recall check built into the transaction. The burden falls entirely on the buyer to proactively investigate.
+        </p>
+        <p>
+          The result, according to CPSC and NHTSA data, is that completion rates for many recalls remain strikingly low. NHTSA data shows that some vehicle recall campaigns see 25–30% of affected vehicles never repaired. For consumer products without vehicle-style VIN tracking, rates can be lower still.
+        </p>
+      </section>
+
+      <section>
+        <h2>What You Need Before You Start</h2>
+        <p>
+          A household audit is straightforward if you gather key identifiers for your products before you start searching. Here's what to collect room by room:
+        </p>
+
+        <h3>For Vehicles</h3>
+        <p>
+          Your 17-character Vehicle Identification Number (VIN) is all you need. Find it:
+        </p>
+        <ul>
+          <li>On the dashboard at the base of the windshield on the driver's side</li>
+          <li>Inside the driver's door jamb on the vehicle certification label</li>
+          <li>On your insurance card or vehicle title</li>
+        </ul>
+        <p>
+          Check at <a href="https://www.nhtsa.gov/recalls" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">NHTSA's recall lookup</a>. Enter your VIN and the tool will show all open safety recalls for your specific vehicle, including whether the recall has been completed.
+        </p>
+
+        <h3>For Appliances and Electronics</h3>
+        <p>
+          Find the model and serial number on the product's rating plate:
+        </p>
+        <ul>
+          <li>Refrigerators: inside the fresh food compartment, usually top or side wall</li>
+          <li>Washing machines and dryers: inside the door opening on the frame</li>
+          <li>Dishwashers: inside the door on the left side</li>
+          <li>Microwaves: on the back or inside the door</li>
+          <li>Small appliances (coffee makers, blenders): on the bottom</li>
+        </ul>
+
+        <h3>For Children's Products</h3>
+        <p>
+          Children's products are the highest-priority category for household audits. Cribs, car seats, high chairs, strollers, play yards, and bouncers have all been subject to major recall campaigns. Look for:
+        </p>
+        <ul>
+          <li>Model number (on a label on the product, often underneath or on the back)</li>
+          <li>Manufacture date (typically on the same label as the model number)</li>
+          <li>Brand name and product name exactly as printed on the product</li>
+        </ul>
+        <p>
+          If you're using any children's furniture or equipment that was passed down from family, purchased used, or bought more than five years ago, this is the highest-priority category to check.
+        </p>
+
+        <h3>For Food and Medications</h3>
+        <p>
+          Active food recalls are time-sensitive — recalled food should be discarded immediately, not saved for later investigation. The UPC code (the barcode) and the lot/batch number (usually stamped on the package near the "best by" date) are the key identifiers.
+        </p>
+        <p>
+          For over-the-counter medications, the National Drug Code (NDC) on the label and the lot number identify specific batches. Prescription medications recalled by FDA typically trigger pharmacy notifications — but if you have stockpiled medications or old prescriptions in your medicine cabinet, those warrant a check.
+        </p>
+      </section>
+
+      <section>
+        <h2>Room-by-Room Audit Guide</h2>
+
+        <h3>Kitchen</h3>
+        <p>
+          <strong>Appliances:</strong> Check your refrigerator (particularly ice makers and water dispensers, which have had multiple recalls), microwave, toaster oven, coffee maker, and blender/food processor. Collect model numbers and search <a href="/search" class="text-red-600 dark:text-red-400 hover:underline">PlainRecalls</a> or the <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">CPSC recall database</a>.
+        </p>
+        <p>
+          <strong>Food storage containers:</strong> Certain BPA-containing plastic containers and water bottles were subject to recalls. If you're using older Tupperware-style containers from the early 2000s, they may predate modern BPA-free standards — check the brand and product line.
+        </p>
+        <p>
+          <strong>Current food items:</strong> Search PlainRecalls <a href="/category/food" class="text-red-600 dark:text-red-400 hover:underline">food recall category</a> for recent alerts. Sign up for FDA recall alerts if you want ongoing notification.
+        </p>
+
+        <h3>Nursery and Children's Rooms</h3>
+        <p>
+          This room deserves the most attention. Major recall categories for children's products include:
+        </p>
+        <ul>
+          <li><strong>Drop-side cribs:</strong> All drop-side cribs were effectively banned by CPSC rule change in 2011. If you have an older drop-side crib, it should not be used — full stop. These cribs were linked to infant strangulation and suffocation deaths.</li>
+          <li><strong>Inclined sleepers:</strong> Fisher-Price Rock 'n Play Sleepers and numerous similar products were recalled starting in 2019 following infant fatalities. Any inclined infant sleeper with more than 10-degree incline should be verified.</li>
+          <li><strong>Car seats:</strong> Check your car seat model at NHTSA's vehicle safety portal. Car seat recalls can involve harness failures, buckle defects, or base installation issues.</li>
+          <li><strong>Baby monitors:</strong> Electrical and overheating recalls have affected multiple models. Check if your monitor model is in the database.</li>
+          <li><strong>Strollers:</strong> Stroller recalls typically involve finger entrapment, folding mechanism failures, or wheel detachment. If you're using a hand-me-down stroller, check it by model number.</li>
+        </ul>
+
+        <h3>Living Room</h3>
+        <p>
+          <strong>Furniture tip-over hazards:</strong> IKEA MALM dressers and hundreds of similar products have been recalled due to tip-over hazards that have caused child fatalities. Any tall, front-heavy dresser that is not wall-anchored may be covered by a tip-over recall. Search by brand and model.
+        </p>
+        <p>
+          <strong>Electronics:</strong> Certain laptop and power bank batteries have been recalled due to fire risk. Check your laptop brand and model, particularly if it was purchased between 2016–2022, when lithium battery recall campaigns were frequent. Major recall series affected Dell, Apple, Lenovo, and HP models during this period.
+        </p>
+        <p>
+          <strong>Power strips and surge protectors:</strong> Several models have been recalled for fire hazard. Check brand and model number.
+        </p>
+
+        <h3>Garage and Vehicle</h3>
+        <p>
+          Run a VIN check on every vehicle in your garage, including motorcycles, ATVs, and trailers if you own them. For vehicles you haven't driven recently or plan to sell, a recall check is important before putting them back on the road.
+        </p>
+        <p>
+          <strong>Tires:</strong> Tire recalls cover specific DOT tire identification numbers. The DOT number is molded into the tire sidewall. Major tire recall campaigns have affected popular brands including Michelin, Goodyear, Firestone, and others at various times.
+        </p>
+        <p>
+          <strong>Power tools and outdoor equipment:</strong> Chainsaws, lawnmowers, and power tools have been subject to recalls involving blade guards, fuel leaks, and electrical hazards. Check your power tool brands and model numbers.
+        </p>
+
+        <h3>Bathroom and Medicine Cabinet</h3>
+        <p>
+          <strong>Medications:</strong> Check both prescription and OTC medications for FDA recalls. Common recall reasons include contamination (particularly with NDMA, a probable carcinogen found in metformin, Zantac/ranitidine, and some ARB blood pressure medications), mislabeling, and subpotency. Search the <a href="/agency/fda" class="text-red-600 dark:text-red-400 hover:underline">FDA recall records on PlainRecalls</a>.
+        </p>
+        <p>
+          <strong>Medical devices:</strong> If you use a CPAP machine (particularly older ResMed or Philips Respironics models), blood glucose monitors, or home diagnostic equipment, check for active recalls. Philips issued a major CPAP recall in 2021 affecting millions of devices due to foam degradation concerns.
+        </p>
+      </section>
+
+      <section>
+        <h2>How to Search Effectively</h2>
+        <p>
+          When searching for recalls, try multiple search strategies:
+        </p>
+        <ol>
+          <li><strong>By model number:</strong> The most precise search. Enter the full model number as printed on the product label.</li>
+          <li><strong>By brand and product name:</strong> Useful when you can't read the model number or it's worn off. Search for the brand name plus product type ("Graco high chair", "Cuisinart coffee maker").</li>
+          <li><strong>By product category:</strong> Browse <a href="/category/" class="text-red-600 dark:text-red-400 hover:underline">PlainRecalls categories</a> to see all recalls for a type of product. Useful for identifying recalls you might not know to look for.</li>
+          <li><strong>By year:</strong> If you bought a product in a specific year, filter by recall year to focus on recalls relevant to that vintage.</li>
+        </ol>
+        <p>
+          PlainRecalls searches across all three federal databases — FDA, CPSC, and NHTSA — simultaneously. You can also search individual agency databases directly at <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">CPSC.gov</a>, <a href="https://www.recalls.gov" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">Recalls.gov</a>, and <a href="https://www.nhtsa.gov/recalls" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">NHTSA.gov</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>What to Do When You Find a Match</h2>
+        <p>
+          If your product appears in the recall database:
+        </p>
+        <ol>
+          <li><strong>Stop using it immediately</strong> if the recall is for a safety hazard (fire, choking, entrapment, etc.). For lower-urgency recalls (labeling errors, minor performance issues), read the recall notice for specific guidance on continued use.</li>
+          <li><strong>Confirm your specific unit is affected</strong> by checking the model/serial/lot number against the exact parameters in the recall notice. Not every unit of a given model is necessarily covered — recalls sometimes apply only to specific date ranges or serial number ranges.</li>
+          <li><strong>Follow the remedy instructions</strong> in the recall notice. The remedy will specify refund, replacement, or free repair, along with contact information for the manufacturer.</li>
+          <li><strong>Document the recall and your response</strong> — keep a record of when you discovered the recall, which remedy you pursued, and confirmation that it was completed. For vehicles, your dealer will update NHTSA records when the recall repair is done.</li>
+        </ol>
+        <p>
+          For more detail on claiming remedies, see the guide on <a href="/guides/what-to-do-when-a-product-is-recalled" class="text-red-600 dark:text-red-400 hover:underline">what to do when a product is recalled</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Staying Current After Your Audit</h2>
+        <p>
+          A household audit is a snapshot in time. Products you own today can be recalled tomorrow. A few habits keep you current:
+        </p>
+        <ul>
+          <li><strong>Register new products</strong> when you buy them. Yes, most people skip this, but for children's products and appliances, it's the one reliable way to get direct manufacturer notification if a recall occurs.</li>
+          <li><strong>Sign up for agency email alerts:</strong> CPSC offers a recall alert email list at <a href="https://www.cpsc.gov/Newsroom/Subscribe" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">CPSC.gov/Newsroom/Subscribe</a>. FDA offers MedWatch safety alerts. NHTSA sends recall alerts to registered vehicle owners.</li>
+          <li><strong>Check periodically.</strong> An annual household audit — or a check whenever you acquire a used product — catches recalls that occur between your initial search and your ongoing ownership.</li>
+          <li><strong>Check before buying used.</strong> Before completing any used product purchase, search the model number on PlainRecalls or <a href="https://www.recalls.gov" target="_blank" rel="noopener noreferrer" class="text-red-600 dark:text-red-400 hover:underline">Recalls.gov</a>. This is especially important for children's products, car seats, and appliances.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why Recall Completion Rates Are So Low</h2>
+        <p>
+          If you've wondered why so many recalled products stay in use despite the agencies' best efforts, the structural reasons are worth understanding — they explain why a proactive personal audit matters more than waiting for notification.
+        </p>
+
+        <h3>The Registration Gap</h3>
+        <p>
+          Unlike vehicle VINs, which are tied to DMV registration records, consumer products have no equivalent mandatory tracking system. Product registration is voluntary and conducted by manufacturers, not government agencies. Consumer registration rates for household products are estimated at 10–30% at best — meaning up to 90% of product owners are invisible to the manufacturer in the event of a recall.
+        </p>
+        <p>
+          This gap is structural and deliberate: mandatory product registration would raise costs and privacy concerns, so the current system relies on voluntary participation. The practical result is that most product recalls rely on media coverage, retailer cooperation, and public awareness programs to reach consumers — all of which have limited reach compared to direct notification.
+        </p>
+
+        <h3>The Secondary Market Problem</h3>
+        <p>
+          Even when a manufacturer contacts the original buyer, recalled products frequently circulate through garage sales, thrift stores, Facebook Marketplace, and Craigslist after the recall announcement. Sellers may not know the product is recalled; buyers have no way to know unless they check.
+        </p>
+        <p>
+          CPSC prohibits the sale of recalled products, but enforcement against individual private sellers is practically impossible at scale. The agency's focus is on stopping recalled products from being sold by commercial retailers, not policing private transactions. This means the secondary market is the largest vector for recalled products ending up with new, uninformed owners.
+        </p>
+        <p>
+          For major recall categories — children's furniture, car seats, appliances — the recall database check is your only protection when buying used. See the <a href="/guides/checking-products-for-recalls" class="text-red-600 dark:text-red-400 hover:underline">checking products for recalls guide</a> for step-by-step instructions on the federal databases.
+        </p>
+
+        <h3>Time: Recalls Issued Years or Decades Ago</h3>
+        <p>
+          CPSC's recall database includes products recalled in the 1990s and early 2000s. A child's bicycle helmet recalled in 2004 may still be in a garage. A baby monitor recalled in 2007 may still be in use. The recall doesn't expire, the remedy is still technically available, but the practical probability that a consumer will connect a decades-old product to a decades-old recall announcement approaches zero — unless they actively search.
+        </p>
+        <p>
+          This time dimension is why PlainRecalls archives all 83,000+ historical recalls, not just recent ones. Browse the <a href="/recent" class="text-red-600 dark:text-red-400 hover:underline">recent recalls</a> for current alerts, or search by product type to find historical records that may apply to older items in your home.
+        </p>
+      </section>
+
+      <section>
+        <h2>Frequently Asked Questions</h2>
+
+        <details class="group">
+          <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100">How many recalled products are still in use in U.S. homes?</summary>
+          <p>Estimates vary, but NHTSA data consistently shows that vehicle recall completion rates hover around 70–75%, meaning roughly one in four recalled vehicles never gets fixed. For consumer products, completion rates are often lower — some CPSC recalls see completion rates below 20%. With hundreds of recalls issued each year and going back decades, tens of millions of recalled products are likely still in active use in American homes.</p>
+        </details>
+
+        <details class="group">
+          <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100">Why wasn't I notified when my product was recalled?</summary>
+          <p>Notification depends on registration. For vehicles, manufacturers can notify registered owners through DMV records. For consumer products, manufacturers can only directly contact consumers who registered their product — which most people skip. If you bought a product used, at a garage sale, or from a retailer who no longer carries it, there is often no way for the manufacturer or CPSC to reach you. This is why proactive checking is important.</p>
+        </details>
+
+        <details class="group">
+          <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100">What information do I need to check if a product is recalled?</summary>
+          <p>For consumer products: brand name, model number, and production date or lot number (usually on a label on the bottom or back of the product). For vehicles: your 17-character Vehicle Identification Number (VIN), found on the dashboard near the windshield or inside the driver's door jamb. For food and medications: UPC code and lot/batch number from the product packaging. For appliances: model and serial number from the rating plate.</p>
+        </details>
+
+        <details class="group">
+          <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100">Are older products from years ago still worth checking?</summary>
+          <p>Yes. Recalls do not expire, and older recalls covering products from the 1990s through 2000s are still in the federal databases. Products like cribs, playpens, high chairs, and drop-side beds were recalled en masse following CPSC rule changes in the early 2010s — if you have children's furniture passed down through a family or bought used, those products may be covered by still-active recalls. Checking is free and takes minutes.</p>
+        </details>
+
+        <details class="group">
+          <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100">What should I do if I find a recalled product I've been using for years?</summary>
+          <p>Stop using the product and follow the remedy instructions in the recall notice. For most consumer products, the manufacturer will provide a refund, replacement, or repair even years after the recall was announced — the remedy obligation doesn't expire. Contact the manufacturer directly using the phone number or website listed in the recall notice. If you cannot reach them, contact the relevant agency (CPSC at 1-800-638-2772 for consumer products, NHTSA at 1-888-327-4236 for vehicles, FDA MedWatch for medical devices).</p>
+        </details>
+      </section>
+
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        <strong>Sources:</strong> U.S. Consumer Product Safety Commission (CPSC) recall database; National Highway Traffic Safety Administration (NHTSA) safety defects and recalls; U.S. Food and Drug Administration (FDA) recalls, market withdrawals, and safety alerts; NHTSA vehicle recall completion rate reports.
+      </p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+        <strong>Last updated:</strong> March 2026
+      </p>
+    </div>
+  </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</Base>
