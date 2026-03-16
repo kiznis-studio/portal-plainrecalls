@@ -16,7 +16,7 @@ services:
       - MAX_BOT_CONCURRENT=25
     networks:
       - portals
-    mem_limit: 256m
+    mem_limit: 384m
     cpus: 0.5
 
 networks:
