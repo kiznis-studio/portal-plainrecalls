@@ -96,7 +96,7 @@ const datasetSchema = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Dataset',
   name: `${agencyLabel(recall.agency)} Recall: ${truncate(recall.title, 100)}`,
-  description: recall.reason || recall.product_description || recall.title,
+  description: truncate(recall.reason || recall.product_description || recall.title, 5000),
   url: new URL(Astro.url.pathname, Astro.site).href,
   ...(recall.date_reported && { datePublished: recall.date_reported }),
   creator: {
