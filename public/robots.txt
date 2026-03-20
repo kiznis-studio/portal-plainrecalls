@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 
-# Sitemap: https://plainrecalls.com/sitemap-index.xml
+Sitemap: https://plainrecalls.com/sitemap-index.xml
 
 # Search Engine Crawlers
 User-agent: Googlebot
