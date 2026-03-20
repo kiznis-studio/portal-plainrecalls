@@ -244,20 +244,33 @@ const datasetSchema = JSON.stringify({
       </div>
     </div>
 
+    <!-- Content Narrative -->
+    <div class="mt-10 card border-gray-200 dark:border-gray-700">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Recall Context</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+        Product recalls are issued when a manufacturer, distributor, or federal agency determines that a product poses a safety risk to consumers. {recall.severity === 1 ? 'This recall is classified as critical severity, meaning the product carries a reasonable probability of serious adverse health consequences or death.' : recall.severity === 2 ? 'This recall is classified as moderate severity, indicating the product may cause temporary or medically reversible health consequences.' : 'Recall severity varies based on the likelihood and degree of potential harm to consumers.'} Across PlainRecalls, we track 83,000+ recalls from FDA, CPSC, and NHTSA to help consumers stay informed and act quickly when safety issues arise.
+      </p>
+    </div>
+
     <!-- H2 #6: Cross-DB Enrichment Links -->
     <div class="mt-10">
       <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Related Safety Data</h2>
       <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Explore related product safety and public health data from federal sources.</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {isVehicle && (
-          <a href="https://plaincars.com" target="_blank" rel="noopener"
-            class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
-            <p class="text-lg mb-1">&#128663;</p>
-            <p class="font-bold text-gray-900 dark:text-white">Vehicle Safety Data</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">NHTSA complaints, investigations, and reliability scores for 3,500+ vehicle models with 2M+ complaints.</p>
-            <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">PlainCars &rarr;</p>
-          </a>
-        )}
+        <a href="https://plainsafety.com" target="_blank" rel="noopener"
+          class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+          <p class="text-lg mb-1">&#9888;&#65039;</p>
+          <p class="font-bold text-gray-900 dark:text-white">Product Injury Data</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">CPSC emergency room injury data for 838 product categories — 7.3M NEISS records tracking real-world consumer product injuries.</p>
+          <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">PlainSafety &rarr;</p>
+        </a>
+        <a href="https://plaincars.com" target="_blank" rel="noopener"
+          class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
+          <p class="text-lg mb-1">&#128663;</p>
+          <p class="font-bold text-gray-900 dark:text-white">{isVehicle ? 'Vehicle Safety Data' : 'Vehicle Recalls & Safety'}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{isVehicle ? 'NHTSA complaints, investigations, and reliability scores for 3,500+ vehicle models with 2M+ complaints.' : 'NHTSA vehicle safety complaints, recall campaigns, and reliability scores across 3,500+ models.'}</p>
+          <p class="text-xs text-primary-600 dark:text-primary-400 mt-2">PlainCars &rarr;</p>
+        </a>
         {isDrug && (
           <a href="https://plainmeds.com" target="_blank" rel="noopener"
             class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800 hover:ring-primary-500 transition-colors block">
