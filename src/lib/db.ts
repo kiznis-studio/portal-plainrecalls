@@ -1,4 +1,5 @@
 import type { Recall, Category, Manufacturer, Agency, SearchResult, AgencyStats } from './types';
+import { persistToDisk, loadFromDisk, warmFromDisk } from './disk-cache';
 
 type Env = { DB: D1Database };
 
@@ -27,6 +28,13 @@ if (IS_CLUSTER_WORKER) {
 
 function cached<T>(key: string, compute: () => Promise<T>): Promise<T> {
   if (queryCache.has(key)) return Promise.resolve(queryCache.get(key) as T);
+
+  // T19: Disk fallback — survives process restart within container
+  const fromDisk = loadFromDisk<T>(key);
+  if (fromDisk !== null) {
+    queryCache.set(key, fromDisk);
+    return Promise.resolve(fromDisk);
+  }
 
   if (IS_CLUSTER_WORKER && process.send) {
     return new Promise<T>((resolve) => {
