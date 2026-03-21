@@ -10,7 +10,7 @@ services:
       - HOST=0.0.0.0
       - PORT=4321
       - WORKERS=1
-      - WORKERS_MAX=4
+      - WORKERS_MAX=2
       - MGMT_PORT=4322
     networks:
       - portals
